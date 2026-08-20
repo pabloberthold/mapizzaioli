@@ -8,36 +8,58 @@ const recipes = (await getCollection("recipes")).sort(
   (a, b) => a.data.order - b.data.order,
 );
 const base = import.meta.env.BASE_URL;
+
+const CATEGORY_LABELS: Record<string, string> = {
+  italiana: "Recetas italianas",
+  alemana: "Recetas alemanas",
+  otras: "Otras recetas",
+};
+
+const CATEGORY_ORDER = ["italiana", "alemana", "otras"];
+
+const groups = new Map<string, typeof recipes>();
+for (const entry of recipes) {
+  const cat = entry.data.category;
+  if (!groups.has(cat)) groups.set(cat, []);
+  groups.get(cat)!.push(entry);
+}
 ---
 
 <Layout
   title="Recetas — mapizzaioli"
-  description="Todas las recetas de masa disponibles en mapizzaioli, con calculadora de hidratación y fermentación."
+  description="Recetas de mapizzaioli organizadas por capítulo: masas italianas, recetas alemanas y otras recetas."
 >
   <main>
     <section class="page-head">
       <div class="container">
         <h1 class="page-head__title">Recetas</h1>
         <p class="page-head__subtitle">
-          Elegí una receta y ajustá los valores para tu masa.
+          Recetas de masa con calculadora y recetas clásicas alemanas e italianas, por capítulo.
         </p>
       </div>
     </section>
 
-    <section class="container">
-      <ul class="recipe-grid">
-        {
-          recipes.map((entry) => (
-            <li>
-              <RecipeCard
-                href={`${base}recetas/${entry.slug}/`}
-                entry={entry}
-              />
-            </li>
-          ))
-        }
-      </ul>
-    </section>
+    {
+      CATEGORY_ORDER.map((cat) => {
+        const items = groups.get(cat);
+        if (!items || items.length === 0) return null;
+        return (
+          <section class="container category">
+            <h2 class="category__title">{CATEGORY_LABELS[cat]}</h2>
+            <ul class="recipe-grid">
+              {items.map((entry) => (
+                <li>
+                  <RecipeCard
+                    href={`${base}recetas/${entry.slug}/`}
+                    entry={entry}
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })
+    }
   </main>
 </Layout>
 
@@ -53,6 +75,24 @@ const base = import.meta.env.BASE_URL;
     color: var(--color-text-secondary);
     margin: 0;
   }
+
+  .category {
+    margin-bottom: var(--spacing-3xl);
+  }
+  .category__title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    font-size: var(--font-size-heading-sm);
+    margin-bottom: var(--spacing-lg);
+  }
+  .category__title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--color-border-default);
+  }
+
   .recipe-grid {
     list-style: none;
     margin: 0;

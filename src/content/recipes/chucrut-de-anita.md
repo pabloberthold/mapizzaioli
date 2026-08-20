@@ -1,6 +1,7 @@
 ---
 title: "Chucrut de Anita"
 description: "Repollo fermentado (sauerkraut) con salmuera y vinagre. Receta tradicional de la abuela."
+category: alemana
 order: 5
 ingredients:
   - name: "Repollo"

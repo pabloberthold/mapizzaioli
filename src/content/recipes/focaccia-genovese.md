@@ -1,6 +1,7 @@
 ---
 title: "Focaccia genovese"
 description: "Focaccia de alta hidratación, alveolada y esponjosa, con biga de 24 horas. Aceite de oliva, romero y sal gruesa."
+category: italiana
 order: 1
 calculator:
   engine: masa

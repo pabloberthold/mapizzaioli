@@ -1,6 +1,7 @@
 ---
 title: "Pan blanco (máquina de pan)"
 description: "Pan blanco en máquina de pan: simple, parejo y sin esfuerzo."
+category: otras
 order: 3
 ingredients:
   - name: "Harina blanca 000"

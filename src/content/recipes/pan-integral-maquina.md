@@ -1,6 +1,7 @@
 ---
 title: "Pan integral (máquina de pan)"
 description: "Pan integral en máquina de pan, con mezcla de harina blanca e integral."
+category: otras
 order: 4
 ingredients:
   - name: "Harina blanca 000"

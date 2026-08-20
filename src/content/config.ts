@@ -11,6 +11,7 @@ const recipes = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
+    category: z.enum(["italiana", "alemana", "otras"]).default("otras"),
     order: z.number().default(0),
     steps: z.array(z.string()),
 

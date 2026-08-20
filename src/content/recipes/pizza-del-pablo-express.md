@@ -1,6 +1,7 @@
 ---
 title: "Pizza del Pablo express"
 description: "Pizza de muzzarella express, sin biga. Masa rápida con levadura fresca y salsa de tomate cruda."
+category: italiana
 order: 2
 calculator:
   engine: express

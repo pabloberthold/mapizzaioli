@@ -1,6 +1,7 @@
 ---
 title: "Masa para pizza"
 description: "Masa clásica con biga de 24 horas. Harina, agua, sal, aceite y la levadura justa según tiempo y temperatura de fermentación."
+category: italiana
 order: 0
 calculator:
   engine: masa

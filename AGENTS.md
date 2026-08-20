@@ -26,7 +26,8 @@ npm run preview  # preview del build
 - Dos tipos de receta en el schema (campo opcional, no exclusivo):
   - `calculator` → interactiva. `engine: "masa"` (biga, 4 inputs, usa `src/lib/dough.ts`) o `engine: "express"` (2 inputs harina/tiempo, usa `src/lib/express.ts`).
   - `ingredients` (lista `{name, amount}`) → estática (sin calculadora, ej. pan de máquina, chucrut).
-- Componentes por tipo: `Calculator.astro` (masa), `ExpressCalculator.astro` (express), `StaticRecipe.astro` (estática). `[slug].astro` elige según el schema.
+- Campo `category` (`italiana` | `alemana` | `otras`, default `otras`): agrupa el listado `/recetas/` en capítulos.
+- Componentes por tipo: `Calculator.astro` (masa), `ExpressCalculator.astro` (express), `StaticRecipe.astro` (estática). `[slug].astro` elige según el schema; `/recetas/` agrupa por categoría.
 - Tokens de diseño en `src/styles/tokens.css` (vendoreados del AI Workspace + paleta marca IT/DE). Todo color/espaciado vía `var(--token)` — nada literal en componentes.
 - Páginas kebab-case, componentes PascalCase, lib camelCase (ver standards del AI Workspace).
 - Deploy automático: push a `main` → `.github/workflows/deploy.yml`.
