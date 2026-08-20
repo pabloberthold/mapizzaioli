@@ -1,7 +1,7 @@
 ---
 title: "Guiso de lentejas de Pablito"
 description: "Guiso de lentejas bien condimentado con carne, chorizos, panceta y verduras. Para 6 porciones."
-category: otras
+category: argentina
 order: 20
 ingredients:
   - name: "Lentejas"

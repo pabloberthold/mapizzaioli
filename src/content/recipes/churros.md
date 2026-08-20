@@ -1,7 +1,7 @@
 ---
 title: "Churros"
 description: "Churros caseros bien crujientes, para unos 18 medianos, rellenos con dulce de leche."
-category: otras
+category: argentina
 order: 18
 ingredients:
   - name: "Harina"

@@ -1,7 +1,7 @@
 ---
 title: "Empanadas de humita"
 description: "Empanadas o tarta de humita: relleno cremoso de choclo, cebolla, leche y quesos."
-category: otras
+category: argentina
 order: 19
 ingredients:
   - name: "Choclo en grano"

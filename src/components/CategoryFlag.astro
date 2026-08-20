@@ -1,0 +1,113 @@
+---
+// src/components/CategoryFlag.astro
+// Banderita de capítulo por categoría. No renderiza nada para "otras".
+interface Props {
+  category: string;
+  size?: "sm" | "md";
+}
+
+const { category, size = "md" } = Astro.props;
+
+const LABELS: Record<string, string> = {
+  italiana: "Bandera italiana",
+  alemana: "Bandera alemana",
+  argentina: "Bandera argentina",
+};
+
+const dirClass =
+  category === "italiana" ? "flag--vertical" : "flag--horizontal";
+---
+
+{
+  LABELS[category] && (
+    <span
+      class={`flag flag--${size} ${dirClass}`}
+      role="img"
+      aria-label={LABELS[category]}
+    >
+      {
+        category === "italiana" && (
+          <>
+            <span class="flag__stripe flag__green" />
+            <span class="flag__stripe flag__white" />
+            <span class="flag__stripe flag__red" />
+          </>
+        )
+      }
+      {
+        category === "alemana" && (
+          <>
+            <span class="flag__stripe flag__black" />
+            <span class="flag__stripe flag__germany-red" />
+            <span class="flag__stripe flag__gold" />
+          </>
+        )
+      }
+      {
+        category === "argentina" && (
+          <>
+            <span class="flag__stripe flag__celeste" />
+            <span class="flag__stripe flag__white" />
+            <span class="flag__stripe flag__celeste" />
+          </>
+        )
+      }
+    </span>
+  )
+}
+
+<style>
+  .flag {
+    display: inline-flex;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-sm);
+  }
+  .flag__stripe {
+    flex: 1;
+  }
+
+  .flag--vertical {
+    flex-direction: row;
+    width: 26px;
+    height: 18px;
+  }
+  .flag--horizontal {
+    flex-direction: column;
+    width: 26px;
+    height: 18px;
+  }
+  .flag--sm {
+    width: 20px;
+    height: 14px;
+  }
+
+  .flag__green {
+    background: var(--color-flag-italy-green);
+  }
+  .flag__white {
+    background: var(--color-flag-italy-white);
+  }
+  .flag__red {
+    background: var(--color-flag-italy-red);
+  }
+  .flag__black {
+    background: var(--color-flag-germany-black);
+  }
+  .flag__germany-red {
+    background: var(--color-flag-germany-red);
+  }
+  .flag__gold {
+    background: var(--color-flag-germany-gold);
+  }
+  .flag__celeste {
+    background: var(--color-flag-argentina-celeste);
+  }
+
+  @media print {
+    .flag {
+      border: none;
+    }
+  }
+</style>

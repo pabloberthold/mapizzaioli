@@ -32,10 +32,15 @@
   --color-border-default: #e6ddce;
   --color-focus-ring: #b3232a;
 
-  /* Bandera — solo para el motivo tricolor, uso decorativo acotado */
+  /* Bandera — motivo tricolor y banderitas de capítulo (uso decorativo acotado) */
   --color-flag-italy-green: #008c45;
   --color-flag-italy-red: #cd212a;
+  --color-flag-italy-white: #f4f5f0;
+  --color-flag-germany-black: #151515;
+  --color-flag-germany-red: #de0000;
   --color-flag-germany-gold: #f2c230;
+  --color-flag-argentina-celeste: #74acdf;
+  --color-flag-argentina-white: #ffffff;
 }
 
 [data-theme="dark"] {

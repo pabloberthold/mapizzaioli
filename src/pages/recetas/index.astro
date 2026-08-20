@@ -2,6 +2,7 @@
 // src/pages/recetas/index.astro
 import Layout from "../../layouts/Layout.astro";
 import RecipeCard from "../../components/RecipeCard.astro";
+import CategoryFlag from "../../components/CategoryFlag.astro";
 import { getCollection } from "astro:content";
 
 const recipes = (await getCollection("recipes")).sort(
@@ -12,10 +13,11 @@ const base = import.meta.env.BASE_URL;
 const CATEGORY_LABELS: Record<string, string> = {
   italiana: "Recetas italianas",
   alemana: "Recetas alemanas",
+  argentina: "Recetas argentinas",
   otras: "Otras recetas",
 };
 
-const CATEGORY_ORDER = ["italiana", "alemana", "otras"];
+const CATEGORY_ORDER = ["italiana", "alemana", "argentina", "otras"];
 
 const groups = new Map<string, typeof recipes>();
 for (const entry of recipes) {
@@ -45,7 +47,10 @@ for (const entry of recipes) {
         if (!items || items.length === 0) return null;
         return (
           <section class="container category">
-            <h2 class="category__title">{CATEGORY_LABELS[cat]}</h2>
+            <h2 class="category__title">
+              {CATEGORY_LABELS[cat]}
+              <CategoryFlag category={cat} />
+            </h2>
             <ul class="recipe-grid">
               {items.map((entry) => (
                 <li>

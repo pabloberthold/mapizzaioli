@@ -1,6 +1,7 @@
 ---
 // src/components/RecipeCard.astro
 import type { CollectionEntry } from "astro:content";
+import CategoryFlag from "./CategoryFlag.astro";
 
 interface Props {
   href: string;
@@ -8,7 +9,7 @@ interface Props {
 }
 
 const { href, entry } = Astro.props;
-const { title, description, calculator } = entry.data;
+const { title, description, calculator, category } = entry.data;
 
 const meta: string[] = calculator
   ? calculator.engine === "express"
@@ -22,7 +23,10 @@ const meta: string[] = calculator
 ---
 
 <a class="recipe-card" href={href}>
-  <h3 class="recipe-card__title">{title}</h3>
+  <div class="recipe-card__head">
+    <h3 class="recipe-card__title">{title}</h3>
+    <CategoryFlag category={category} size="sm" />
+  </div>
   <p class="recipe-card__description">{description}</p>
   <ul class="recipe-card__meta">
     {meta.map((m) => <li>{m}</li>)}
@@ -51,6 +55,12 @@ const meta: string[] = calculator
     border-color: var(--color-brand-primary);
     box-shadow: 0 12px 32px -16px rgba(31, 27, 22, 0.24);
     transform: translateY(-2px);
+  }
+  .recipe-card__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
   }
   .recipe-card__title {
     font-size: var(--font-size-heading-sm);
