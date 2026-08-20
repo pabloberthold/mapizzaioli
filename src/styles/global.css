@@ -111,6 +111,35 @@ a:hover {
   border: 0;
 }
 
+/* Textura "harina" — motas sutiles tipo sémola/harina sobre un resplandor
+ * suave en la parte superior (cabeceras de página y hero). */
+.texture-flour {
+  background-image:
+    radial-gradient(
+      ellipse 900px 420px at 50% -80px,
+      var(--color-surface-highlight) 0%,
+      transparent 68%
+    ),
+    radial-gradient(circle, color-mix(in srgb, var(--color-text-primary) 7%, transparent) 1px, transparent 1.6px),
+    radial-gradient(circle, color-mix(in srgb, var(--color-brand-secondary) 6%, transparent) 1px, transparent 1.5px);
+  background-size: auto, 34px 34px, 34px 34px;
+  background-position: 0 0, 0 0, 17px 17px;
+  background-repeat: no-repeat, repeat, repeat;
+}
+
+/* Acentos en serif itálica (muy italiana) para títulos y repulgues */
+.font-serif-italic {
+  font-family: var(--font-family-heading);
+  font-style: italic;
+  font-weight: var(--font-weight-medium);
+}
+
+/* Cifras tabulares: los números no bailan al cambiar (calculadora, contadores) */
+.tnum,
+input[type="number"] {
+  font-variant-numeric: tabular-nums;
+}
+
 /* Impresión: quitar cromo del sitio y dejar solo la hoja de receta */
 @media print {
   .tricolor,

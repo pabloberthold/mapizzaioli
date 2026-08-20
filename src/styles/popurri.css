@@ -94,6 +94,7 @@
 .popurri-grid__count {
   color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
   margin: 0;
 }
 

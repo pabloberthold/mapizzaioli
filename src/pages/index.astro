@@ -19,10 +19,10 @@ const ld = featured ? recipeJsonLd(featured) : null;
   description="Calculá la masa de pizza perfecta: harina, hidratación, tiempo y temperatura. Receta con biga de 24 horas e impresión en PDF."
 >
   <main>
-    <section class="hero">
+    <section class="hero texture-flour">
       <div class="container hero__inner">
         <p class="hero__eyebrow">Harina · agua · levadura · tiempo</p>
-        <h1 class="hero__title">Masa perfecta,<br />calculada al gramo</h1>
+        <h1 class="hero__title">Masa <em>perfecta</em>,<br />calculada al gramo</h1>
         <p class="hero__subtitle">
           Ingresá la harina, la hidratación y las condiciones de fermentación.
           La calculadora determina la levadura justa y arma la receta con biga,
@@ -65,9 +65,11 @@ const ld = featured ? recipeJsonLd(featured) : null;
     text-align: center;
   }
   .hero__eyebrow {
-    color: var(--color-brand-primary);
+    font-family: var(--font-family-heading);
+    font-style: italic;
     font-weight: var(--font-weight-medium);
-    letter-spacing: 0.08em;
+    color: var(--color-brand-primary);
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     font-size: var(--font-size-sm);
     margin: 0 0 var(--spacing-md);
@@ -75,6 +77,10 @@ const ld = featured ? recipeJsonLd(featured) : null;
   .hero__title {
     font-size: var(--font-size-heading-lg);
     margin-bottom: var(--spacing-lg);
+  }
+  .hero__title em {
+    font-style: italic;
+    color: var(--color-brand-primary);
   }
   .hero__subtitle {
     color: var(--color-text-secondary);
