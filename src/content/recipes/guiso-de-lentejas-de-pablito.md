@@ -1,0 +1,48 @@
+---
+title: "Guiso de lentejas de Pablito"
+description: "Guiso de lentejas bien condimentado con carne, chorizos, panceta y verduras. Para 6 porciones."
+category: otras
+order: 20
+ingredients:
+  - name: "Lentejas"
+    amount: "400 g"
+  - name: "Chorizos blancos"
+    amount: "2"
+  - name: "Chorizo colorado"
+    amount: "1"
+  - name: "Carne (cerdo o vaca)"
+    amount: "1 kg"
+  - name: "Panceta"
+    amount: "a gusto"
+  - name: "Tomate"
+    amount: "500 g"
+  - name: "Zanahoria"
+    amount: "1"
+  - name: "Cebolla"
+    amount: "2"
+  - name: "Cebolla de verdeo"
+    amount: "2 o 3"
+  - name: "Apio"
+    amount: "4 ramitas"
+  - name: "Morrón"
+    amount: "1"
+  - name: "Puerro"
+    amount: "1"
+  - name: "Calditos Knorr"
+    amount: "2"
+  - name: "Condimentos (pimentón, sal, ají picante, orégano)"
+    amount: "a gusto"
+  - name: "Agua"
+    amount: "c/n"
+  - name: "Vino blanco"
+    amount: "1/2 vaso"
+steps:
+  - "La noche previa poner en remojo las lentejas y guardarlas en la heladera."
+  - "Calentar la olla de hierro con un poco de aceite. Cortar la carne, la panceta y los chorizos blancos en cuadraditos parejos y sellarlos."
+  - "Cortar las verduras de tamaño parejo. Cuando la carne esté dorada, retirarla, agregar un chorrito de vino blanco y poner todas las verduras juntas a rehogar. Agregar los condimentos."
+  - "Incorporar la carne con los dos calditos, el chorizo colorado cortado igual y completar con agua. Cocinar todo junto unas 2 horas, hasta que la carne esté muy tierna, revolviendo siempre, a fuego mínimo y con la olla semi destapada."
+  - "Pasadas las dos horas, agregar las lentejas escurridas, completar con agua caliente y seguir cocinando hasta que estén al dente (unos 40 minutos)."
+  - "Apagar el fuego, dejar enfriar un poco y pasar a un tupper. Guardar en la heladera."
+---
+
+Guiso de lentejas abundante y sabroso, de cocción lenta.
