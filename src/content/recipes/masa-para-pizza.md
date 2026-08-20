@@ -5,10 +5,10 @@ category: italiana
 order: 0
 calculator:
   engine: masa
-  flourGrams: 1500
-  hydrationPercent: 60
-  fermentationHours: 4
-  fermentationTempC: 20
+  flourGrams: 1000
+  hydrationPercent: 65
+  fermentationHours: 24
+  fermentationTempC: 5
 steps:
   - "Prepará la biga: mezclá la harina, el agua y la levadura indicadas. Tapá y dejá reposar 24 horas a temperatura ambiente."
   - "Pasadas las 24 horas, incorporá a la biga el resto de la harina, el agua y la sal. Amasá hasta obtener una masa lisa y homogénea."
