@@ -1,0 +1,403 @@
+---
+// src/components/ExpressCalculator.astro
+// Calculadora para recetas "express": 2 inputs (harina + tiempo de reposo).
+// Interactividad con JS vanilla, impresión vía window.print().
+
+import {
+  computeExpress,
+  formatPizcas,
+  isValidExpressInputs,
+} from "../lib/express";
+import { formatGrams } from "../lib/dough";
+
+interface Props {
+  title: string;
+  description: string;
+  defaults: { flourGrams: number; restMinutes: number };
+  steps: string[];
+}
+
+const { title, description, defaults, steps } = Astro.props;
+const result = computeExpress(defaults);
+const hasSteps = steps.length > 0;
+---
+
+<section class="calculator" aria-label="Calculadora de receta">
+  <div class="recipe-sheet">
+    <header class="recipe-sheet__head">
+      <div class="print-only">
+        <h1>{title}</h1>
+        <p class="recipe-sheet__meta" data-print-meta>
+          {formatGrams(defaults.flourGrams)} g de harina · reposo {defaults.restMinutes} min
+        </p>
+      </div>
+
+      <div class="calculator__intro">
+        <h2 class="calculator__title">{title}</h2>
+        <p class="calculator__description">{description}</p>
+      </div>
+
+      <form class="calculator__form screen-only" id="calc-form" autocomplete="off">
+        <div class="field">
+          <label for="inp-flour">Harina (g)</label>
+          <input id="inp-flour" type="number" min="1" step="10" inputmode="decimal" value={defaults.flourGrams} />
+        </div>
+        <div class="field">
+          <label for="inp-time">Tiempo de reposo (min)</label>
+          <input id="inp-time" type="number" min="1" step="1" inputmode="decimal" value={defaults.restMinutes} />
+        </div>
+        <p class="calculator__error" id="calc-error" role="alert" hidden>
+          Ingresá valores mayores a cero en todos los campos.
+        </p>
+      </form>
+    </header>
+
+    <div class="calculator__results">
+      <p class="results-yield">
+        Rinde: <strong><span id="res-pizzas">{formatGrams(result.pizzas)}</span> pizza(s) de muzza</strong>
+        <span class="results-yield__hint">· {formatGrams(result.hydrationPercent)}% hidratación</span>
+      </p>
+
+      <h3 class="results__heading">Masa</h3>
+      <dl class="results-grid">
+        <div class="result-card"><dt>Harina 0000</dt><dd><span id="res-flour">{formatGrams(result.flourGrams)}</span><span class="unit">g</span></dd></div>
+        <div class="result-card"><dt>Levadura fresca</dt><dd><span id="res-yeast">{formatGrams(result.freshYeast)}</span><span class="unit">g</span></dd></div>
+        <div class="result-card"><dt>Agua</dt><dd><span id="res-water">{formatGrams(result.water, 0)}</span><span class="unit">ml</span></dd></div>
+        <div class="result-card"><dt>Sal</dt><dd><span id="res-salt">{formatGrams(result.salt)}</span><span class="unit">g</span></dd></div>
+      </dl>
+
+      <dl class="results-list results-list--extras">
+        <div><dt>Azúcar</dt><dd><span id="res-sugar">{formatPizcas(result.sugarPizcas)}</span></dd></div>
+        <div><dt>Pimienta</dt><dd><span id="res-pepper">{formatPizcas(result.pepperPizcas)}</span></dd></div>
+        <div><dt>Aceite de oliva</dt><dd><span id="res-oil">{formatGrams(result.oil, 0)}</span> ml</dd></div>
+        <div><dt>Leche en polvo (opcional)</dt><dd><span id="res-milk">{formatGrams(result.milkPowder)}</span> g</dd></div>
+      </dl>
+
+      <h3 class="results__heading">Cobertura</h3>
+      <dl class="results-grid">
+        <div class="result-card"><dt>Muzzarella</dt><dd><span id="res-mozzarella">{formatGrams(result.mozzarella, 0)}</span><span class="unit">g</span></dd></div>
+        <div class="result-card"><dt>Tomate triturado</dt><dd><span id="res-tomato">{formatGrams(result.tomato, 0)}</span><span class="unit">ml</span></dd></div>
+        <div class="result-card"><dt>Ajo</dt><dd><span id="res-garlic">{result.garlicLow}–{result.garlicHigh}</span><span class="unit">dientes</span></dd></div>
+        <div class="result-card"><dt>Orégano</dt><dd class="result-card__text">a gusto</dd></div>
+      </dl>
+    </div>
+
+    {
+      hasSteps && (
+        <section class="recipe-steps" aria-label="Preparación">
+          <h3 class="results__heading">Preparación</h3>
+          <ol class="steps">
+            {steps.map((step) => <li>{step}</li>)}
+          </ol>
+        </section>
+      )
+    }
+
+    <div class="calculator__actions screen-only">
+      <button type="button" class="btn btn--primary" id="btn-print">
+        Imprimir / Guardar PDF
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { computeExpress, formatPizcas, isValidExpressInputs } from "../lib/express";
+  import { formatGrams } from "../lib/dough";
+
+  const el = (id: string) => document.getElementById(id) as HTMLElement | null;
+  const num = (id: string) => {
+    const node = el(id) as HTMLInputElement | null;
+    return node ? Number(node.value) : 0;
+  };
+  const set = (id: string, text: string) => {
+    const node = el(id);
+    if (node) node.textContent = text;
+  };
+
+  function update() {
+    const inputs = {
+      flourGrams: num("inp-flour"),
+      restMinutes: num("inp-time"),
+    };
+
+    const error = el("calc-error");
+    if (!isValidExpressInputs(inputs)) {
+      if (error) error.hidden = false;
+      return;
+    }
+    if (error) error.hidden = true;
+
+    const r = computeExpress(inputs);
+
+    set("res-pizzas", formatGrams(r.pizzas));
+    set("res-flour", formatGrams(r.flourGrams));
+    set("res-yeast", formatGrams(r.freshYeast));
+    set("res-water", formatGrams(r.water, 0));
+    set("res-salt", formatGrams(r.salt));
+    set("res-sugar", formatPizcas(r.sugarPizcas));
+    set("res-pepper", formatPizcas(r.pepperPizcas));
+    set("res-oil", formatGrams(r.oil, 0));
+    set("res-milk", formatGrams(r.milkPowder));
+    set("res-mozzarella", formatGrams(r.mozzarella, 0));
+    set("res-tomato", formatGrams(r.tomato, 0));
+    set("res-garlic", `${r.garlicLow}–${r.garlicHigh}`);
+
+    const hint = document.querySelector(".results-yield__hint");
+    if (hint) hint.textContent = `· ${formatGrams(r.hydrationPercent)}% hidratación`;
+
+    const meta = el("print-meta");
+    if (meta) {
+      meta.textContent =
+        `${formatGrams(inputs.flourGrams)} g de harina · reposo ${inputs.restMinutes} min`;
+    }
+  }
+
+  ["inp-flour", "inp-time"].forEach((id) => {
+    el(id)?.addEventListener("input", update);
+  });
+
+  el("btn-print")?.addEventListener("click", () => window.print());
+</script>
+
+<style>
+  .calculator {
+    max-width: 860px;
+    margin-inline: auto;
+  }
+
+  .recipe-sheet {
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(31, 27, 22, 0.06), 0 12px 32px -16px rgba(31, 27, 22, 0.18);
+  }
+
+  .recipe-sheet__head {
+    padding: var(--spacing-xl);
+    border-bottom: 1px solid var(--color-border-default);
+  }
+
+  .calculator__intro {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+  }
+  .calculator__title {
+    font-size: var(--font-size-heading-md);
+    margin-bottom: var(--spacing-sm);
+  }
+  .calculator__description {
+    color: var(--color-text-secondary);
+    margin: 0 auto;
+    max-width: 46ch;
+  }
+
+  .calculator__form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+    max-width: 480px;
+    margin-inline: auto;
+  }
+  @media (max-width: 480px) {
+    .calculator__form {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .field label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+  }
+  .field input {
+    font: inherit;
+    color: var(--color-text-primary);
+    background: var(--color-surface-base);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field input:focus {
+    outline: none;
+    border-color: var(--color-focus-ring);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-focus-ring) 22%, transparent);
+  }
+
+  .calculator__error {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--color-state-error);
+    font-size: var(--font-size-sm);
+  }
+
+  .calculator__results {
+    padding: var(--spacing-xl);
+  }
+
+  .results-yield {
+    margin: 0 0 var(--spacing-md);
+    font-size: var(--font-size-lg);
+  }
+  .results-yield strong {
+    color: var(--color-brand-primary);
+  }
+  .results-yield__hint {
+    color: var(--color-text-secondary);
+  }
+
+  .results__heading {
+    font-size: var(--font-size-heading-sm);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .results-grid {
+    display: grid;
+    gap: var(--spacing-md);
+    margin: 0 0 var(--spacing-xl);
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @media (max-width: 640px) {
+    .results-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .result-card {
+    background: var(--color-surface-highlight);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg) var(--spacing-md);
+    text-align: center;
+  }
+  .result-card dt {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xs);
+  }
+  .result-card dd {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    font-variant-numeric: tabular-nums;
+  }
+  .result-card .unit {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    margin-left: 2px;
+  }
+  .result-card dd.result-card__text {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+  }
+
+  .results-list {
+    margin: 0 0 var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    background: var(--color-surface-base);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+  }
+  .results-list > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+  }
+  .results-list dt {
+    color: var(--color-text-secondary);
+  }
+  .results-list dd {
+    margin: 0;
+    font-weight: var(--font-weight-medium);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .recipe-steps {
+    padding: 0 var(--spacing-xl) var(--spacing-xl);
+  }
+  .steps {
+    margin: 0;
+    padding-left: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    color: var(--color-text-secondary);
+  }
+  .steps li {
+    padding-left: var(--spacing-xs);
+  }
+
+  .calculator__actions {
+    display: flex;
+    justify-content: center;
+    padding: 0 var(--spacing-xl) var(--spacing-xl);
+  }
+
+  .btn {
+    font: inherit;
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    border-radius: var(--radius-full);
+    padding: var(--spacing-md) var(--spacing-xl);
+    border: 1px solid transparent;
+    transition: background-color 0.15s ease, transform 0.05s ease;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn--primary {
+    background: var(--color-brand-primary);
+    color: var(--color-text-inverse);
+  }
+  .btn--primary:hover {
+    background: var(--color-brand-primary-hover);
+  }
+
+  .print-only {
+    display: none;
+  }
+
+  @media print {
+    .recipe-sheet {
+      box-shadow: none;
+      border: none;
+      border-radius: 0;
+    }
+    .screen-only {
+      display: none !important;
+    }
+    .print-only {
+      display: block;
+      margin-bottom: var(--spacing-lg);
+    }
+    .print-only h1 {
+      font-size: var(--font-size-heading-md);
+      margin-bottom: var(--spacing-xs);
+    }
+    .recipe-sheet__meta {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+    }
+    .calculator__results {
+      padding: 0;
+    }
+    .result-card {
+      border: 1px solid var(--color-border-default);
+      background: none;
+    }
+    .recipe-steps {
+      padding: var(--spacing-xl) 0 0;
+    }
+  }
+</style>

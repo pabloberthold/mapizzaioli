@@ -1,0 +1,188 @@
+---
+// src/components/StaticRecipe.astro
+// Renderiza recetas estáticas (sin calculadora): ingredientes + preparación + nota.
+
+interface Props {
+  title: string;
+  description: string;
+  ingredients: { name: string; amount: string }[];
+  steps: string[];
+  note?: string;
+}
+
+const { title, description, ingredients, steps, note } = Astro.props;
+const hasIngredients = ingredients.length > 0;
+---
+
+<section class="static-recipe" aria-label={title}>
+  <div class="recipe-sheet">
+    <header class="recipe-sheet__head">
+      <h1 class="static-recipe__title">{title}</h1>
+      <p class="static-recipe__description">{description}</p>
+    </header>
+
+    {
+      hasIngredients && (
+        <div class="static-recipe__body">
+          <h2 class="static-recipe__heading">Ingredientes</h2>
+          <ul class="ingredients">
+            {ingredients.map((item) => (
+              <li>
+                <span class="ingredients__name">{item.name}</span>
+                <span class="ingredients__amount">{item.amount}</span>
+              </li>
+            ))}
+          </ul>
+          {note && <p class="static-recipe__note"><strong>Nota:</strong> {note}</p>}
+        </div>
+      )
+    }
+
+    <div class="static-recipe__body">
+      <h2 class="static-recipe__heading">Preparación</h2>
+      <ol class="steps">
+        {steps.map((step) => <li>{step}</li>)}
+      </ol>
+    </div>
+
+    <div class="static-recipe__actions screen-only">
+      <button type="button" class="btn btn--primary" data-print>
+        Imprimir / Guardar PDF
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelector("[data-print]")?.addEventListener("click", () => window.print());
+</script>
+
+<style>
+  .static-recipe {
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  .recipe-sheet {
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(31, 27, 22, 0.06), 0 12px 32px -16px rgba(31, 27, 22, 0.18);
+  }
+
+  .recipe-sheet__head {
+    padding: var(--spacing-xl);
+    border-bottom: 1px solid var(--color-border-default);
+    text-align: center;
+  }
+  .static-recipe__title {
+    font-size: var(--font-size-heading-md);
+    margin-bottom: var(--spacing-sm);
+  }
+  .static-recipe__description {
+    color: var(--color-text-secondary);
+    margin: 0 auto;
+    max-width: 52ch;
+  }
+
+  .static-recipe__body {
+    padding: var(--spacing-xl);
+  }
+  .static-recipe__body + .static-recipe__body {
+    padding-top: 0;
+  }
+
+  .static-recipe__heading {
+    font-size: var(--font-size-heading-sm);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .ingredients {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .ingredients li {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px dashed var(--color-border-default);
+  }
+  .ingredients li:last-child {
+    border-bottom: none;
+  }
+  .ingredients__name {
+    color: var(--color-text-primary);
+  }
+  .ingredients__amount {
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .static-recipe__note {
+    margin: var(--spacing-md) 0 0;
+    padding: var(--spacing-md);
+    background: var(--color-surface-highlight);
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+  }
+
+  .steps {
+    margin: 0;
+    padding-left: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    color: var(--color-text-secondary);
+  }
+  .steps li {
+    padding-left: var(--spacing-xs);
+  }
+
+  .static-recipe__actions {
+    display: flex;
+    justify-content: center;
+    padding: 0 var(--spacing-xl) var(--spacing-xl);
+  }
+
+  .btn {
+    font: inherit;
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    border-radius: var(--radius-full);
+    padding: var(--spacing-md) var(--spacing-xl);
+    border: 1px solid transparent;
+    transition: background-color 0.15s ease, transform 0.05s ease;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn--primary {
+    background: var(--color-brand-primary);
+    color: var(--color-text-inverse);
+  }
+  .btn--primary:hover {
+    background: var(--color-brand-primary-hover);
+  }
+
+  @media print {
+    .recipe-sheet {
+      box-shadow: none;
+      border: none;
+      border-radius: 0;
+    }
+    .screen-only {
+      display: none !important;
+    }
+    .static-recipe__body {
+      padding: var(--spacing-lg) 0;
+    }
+  }
+</style>

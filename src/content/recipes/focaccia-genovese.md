@@ -2,10 +2,12 @@
 title: "Focaccia genovese"
 description: "Focaccia de alta hidratación, alveolada y esponjosa, con biga de 24 horas. Aceite de oliva, romero y sal gruesa."
 order: 1
-flourGrams: 1000
-hydrationPercent: 78
-fermentationHours: 3
-fermentationTempC: 24
+calculator:
+  engine: masa
+  flourGrams: 1000
+  hydrationPercent: 78
+  fermentationHours: 3
+  fermentationTempC: 24
 steps:
   - "Prepará la biga: mezclá la harina, el agua y la levadura indicadas. Tapá y dejá reposar 24 horas a temperatura ambiente."
   - "Pasadas las 24 horas, sumá a la biga el resto de la harina, el agua y la sal. Amasá hasta integrar todo."

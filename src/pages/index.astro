@@ -32,16 +32,16 @@ const ld = featured ? recipeJsonLd(featured) : null;
     </section>
 
     {
-      featured && (
+      featured && featured.data.calculator && (
         <div class="container">
           <Calculator
             title={featured.data.title}
             description={featured.data.description}
             defaults={{
-              flourGrams: featured.data.flourGrams,
-              hydrationPercent: featured.data.hydrationPercent,
-              fermentationHours: featured.data.fermentationHours,
-              fermentationTempC: featured.data.fermentationTempC,
+              flourGrams: featured.data.calculator.flourGrams,
+              hydrationPercent: featured.data.calculator.hydrationPercent,
+              fermentationHours: featured.data.calculator.fermentationHours,
+              fermentationTempC: featured.data.calculator.fermentationTempC,
             }}
             steps={featured.data.steps}
           />

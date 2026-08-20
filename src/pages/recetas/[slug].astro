@@ -2,6 +2,8 @@
 // src/pages/recetas/[slug].astro
 import Layout from "../../layouts/Layout.astro";
 import Calculator from "../../components/Calculator.astro";
+import ExpressCalculator from "../../components/ExpressCalculator.astro";
+import StaticRecipe from "../../components/StaticRecipe.astro";
 import { getCollection, type CollectionEntry } from "astro:content";
 import { recipeJsonLd } from "../../lib/seo";
 
@@ -18,8 +20,7 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { title, description, flourGrams, hydrationPercent, fermentationHours, fermentationTempC, steps } =
-  entry.data;
+const { title, description, steps, calculator, ingredients, note } = entry.data;
 
 const base = import.meta.env.BASE_URL;
 const ld = recipeJsonLd(entry);
@@ -35,17 +36,41 @@ const ld = recipeJsonLd(entry);
           <span aria-current="page">{title}</span>
         </nav>
 
-        <Calculator
-          title={title}
-          description={description}
-          defaults={{
-            flourGrams,
-            hydrationPercent,
-            fermentationHours,
-            fermentationTempC,
-          }}
-          steps={steps}
-        />
+        {
+          calculator ? (
+            calculator.engine === "express" ? (
+              <ExpressCalculator
+                title={title}
+                description={description}
+                defaults={{
+                  flourGrams: calculator.flourGrams,
+                  restMinutes: calculator.restMinutes,
+                }}
+                steps={steps}
+              />
+            ) : (
+              <Calculator
+                title={title}
+                description={description}
+                defaults={{
+                  flourGrams: calculator.flourGrams,
+                  hydrationPercent: calculator.hydrationPercent,
+                  fermentationHours: calculator.fermentationHours,
+                  fermentationTempC: calculator.fermentationTempC,
+                }}
+                steps={steps}
+              />
+            )
+          ) : (
+            <StaticRecipe
+              title={title}
+              description={description}
+              ingredients={ingredients ?? []}
+              steps={steps}
+              note={note}
+            />
+          )
+        }
       </div>
     </section>
   </main>

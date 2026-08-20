@@ -8,19 +8,28 @@ interface Props {
 }
 
 const { href, entry } = Astro.props;
-const { title, description, hydrationPercent, fermentationHours, fermentationTempC } =
-  entry.data;
+const { title, description, calculator } = entry.data;
+
+const meta: string[] = calculator
+  ? calculator.engine === "express"
+    ? ["Express · sin biga", `${calculator.restMinutes} min de reposo`]
+    : [
+        `${calculator.hydrationPercent}% hidratación`,
+        `${calculator.fermentationHours} h`,
+        `${calculator.fermentationTempC} °C`,
+      ]
+  : ["Receta"];
 ---
 
 <a class="recipe-card" href={href}>
   <h3 class="recipe-card__title">{title}</h3>
   <p class="recipe-card__description">{description}</p>
   <ul class="recipe-card__meta">
-    <li>{hydrationPercent}% hidratación</li>
-    <li>{fermentationHours} h</li>
-    <li>{fermentationTempC} °C</li>
+    {meta.map((m) => <li>{m}</li>)}
   </ul>
-  <span class="recipe-card__cta" aria-hidden="true">Calcular →</span>
+  <span class="recipe-card__cta" aria-hidden="true">
+    {calculator ? "Calcular →" : "Ver receta →"}
+  </span>
 </a>
 
 <style>
