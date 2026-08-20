@@ -63,6 +63,16 @@ body {
   line-height: var(--line-height-base);
   color: var(--color-text-primary);
   background-color: var(--color-surface-base);
+  background-image:
+    linear-gradient(
+      color-mix(in srgb, var(--color-surface-base) 88%, transparent),
+      color-mix(in srgb, var(--color-surface-base) 88%, transparent)
+    ),
+    var(--bg-url, none);
+  background-size: cover, cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
 }
 
