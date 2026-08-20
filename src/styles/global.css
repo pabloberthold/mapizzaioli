@@ -65,8 +65,8 @@ body {
   background-color: var(--color-surface-base);
   background-image:
     linear-gradient(
-      color-mix(in srgb, var(--color-surface-base) 88%, transparent),
-      color-mix(in srgb, var(--color-surface-base) 88%, transparent)
+      color-mix(in srgb, var(--color-surface-base) 72%, transparent),
+      color-mix(in srgb, var(--color-surface-base) 72%, transparent)
     ),
     var(--bg-url, none);
   background-size: cover, cover;
