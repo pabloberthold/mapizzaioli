@@ -23,7 +23,7 @@ ingredients:
 steps:
   - "Poner en remojo el pan sin la cáscara en leche tibia. Deshacer con un tenedor."
   - "Agregar los 3 huevos batidos, las 2 manzanas peladas y cortadas finas, la crema, las pasas de uva y 1 banana cortada. Mezclar bien."
-  - "Colocar en una fuente alta para horno y cocinar en horno moderado: está listo al introducir un cuchillo y salir seco. Debe quedar dorado."
+  - "Colocar en una fuente alta para horno y cocinar en horno moderado; está listo cuando, al introducir un cuchillo, este sale seco. Debe quedar dorado."
   - "Se acompaña con carne asada y papas al horno."
 ---
 
