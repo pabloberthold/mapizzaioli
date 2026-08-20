@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pabloberthold.github.io/mapizzaioli/sitemap-index.xml

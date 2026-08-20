@@ -1,0 +1,71 @@
+---
+// src/pages/recetas/[slug].astro
+import Layout from "../../layouts/Layout.astro";
+import Calculator from "../../components/Calculator.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { recipeJsonLd } from "../../lib/seo";
+
+export async function getStaticPaths() {
+  const recipes = await getCollection("recipes");
+  return recipes.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<"recipes">;
+}
+
+const { entry } = Astro.props;
+const { title, description, flourGrams, hydrationPercent, fermentationHours, fermentationTempC, steps } =
+  entry.data;
+
+const base = import.meta.env.BASE_URL;
+const ld = recipeJsonLd(entry);
+---
+
+<Layout title={`${title} — mapizzaioli`} description={description}>
+  <main>
+    <section class="recipe-page">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Miga de pan">
+          <a href={`${base}recetas/`}>Recetas</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{title}</span>
+        </nav>
+
+        <Calculator
+          title={title}
+          description={description}
+          defaults={{
+            flourGrams,
+            hydrationPercent,
+            fermentationHours,
+            fermentationTempC,
+          }}
+          steps={steps}
+        />
+      </div>
+    </section>
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+</Layout>
+
+<style>
+  .recipe-page {
+    padding-block: var(--spacing-xl) var(--spacing-3xl);
+  }
+  .breadcrumb {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-lg);
+  }
+  .breadcrumb a {
+    color: var(--color-brand-primary);
+  }
+</style>

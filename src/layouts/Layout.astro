@@ -1,0 +1,183 @@
+---
+// src/layouts/Layout.astro
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+}
+
+const { title, description, image = "" } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = image
+  ? new URL(image, Astro.site).href
+  : new URL("og-default.png", Astro.site).href;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#b3232a" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="sitemap" href={`${base}sitemap-index.xml`} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="mapizzaioli" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="tricolor" aria-hidden="true">
+      <span class="tricolor__green"></span>
+      <span class="tricolor__red"></span>
+      <span class="tricolor__gold"></span>
+    </div>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="brand" href={base} aria-label="mapizzaioli — inicio">
+          <span class="brand__mark">m</span>
+          <span class="brand__name">mapizzaioli</span>
+        </a>
+        <nav class="site-nav" aria-label="Navegación principal">
+          <a href={base} class:list={["site-nav__link", { "site-nav__link--active": Astro.url.pathname === base || Astro.url.pathname === "/" }]}>
+            Inicio
+          </a>
+          <a href={`${base}recetas/`} class:list={["site-nav__link", { "site-nav__link--active": Astro.url.pathname.startsWith(`${base}recetas`) }]}>
+            Recetas
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <slot />
+
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <p>mapizzaioli — calculadora de masa para pizza.</p>
+        <p class="site-footer__note">Hecho con Astro · alojado en GitHub Pages</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .tricolor {
+    display: flex;
+    height: 4px;
+  }
+  .tricolor span {
+    flex: 1;
+  }
+  .tricolor__green {
+    background: var(--color-flag-italy-green);
+  }
+  .tricolor__red {
+    background: var(--color-flag-italy-red);
+  }
+  .tricolor__gold {
+    background: var(--color-flag-germany-gold);
+  }
+
+  .site-header {
+    background: var(--color-surface-raised);
+    border-bottom: 1px solid var(--color-border-default);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-lg);
+    padding-block: var(--spacing-md);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--color-text-primary);
+    text-decoration: none;
+  }
+  .brand:hover {
+    text-decoration: none;
+    color: var(--color-text-primary);
+  }
+  .brand__mark {
+    display: inline-grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--radius-full);
+    background: var(--color-brand-primary);
+    color: var(--color-text-inverse);
+    font-family: var(--font-family-heading);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-lg);
+    line-height: 1;
+  }
+  .brand__name {
+    font-family: var(--font-family-heading);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-lg);
+  }
+
+  .site-nav {
+    display: flex;
+    gap: var(--spacing-lg);
+  }
+  .site-nav__link {
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    padding: var(--spacing-xs) 0;
+    border-bottom: 2px solid transparent;
+  }
+  .site-nav__link:hover {
+    color: var(--color-text-primary);
+    text-decoration: none;
+  }
+  .site-nav__link--active {
+    color: var(--color-brand-primary);
+    border-bottom-color: var(--color-brand-primary);
+  }
+
+  .site-footer {
+    margin-top: var(--spacing-3xl);
+    padding-block: var(--spacing-xl);
+    border-top: 1px solid var(--color-border-default);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+  }
+  .site-footer__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  .site-footer__inner p {
+    margin: 0;
+  }
+  .site-footer__note {
+    opacity: 0.7;
+  }
+</style>

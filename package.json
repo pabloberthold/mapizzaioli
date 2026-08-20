@@ -1,0 +1,16 @@
+{
+  "name": "mapizzaioli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Calculadora de masa para pizza — recetas con biga e hidratación ajustable.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.2.1",
+    "astro": "^5.0.0"
+  }
+}

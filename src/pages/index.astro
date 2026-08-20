@@ -1,0 +1,85 @@
+---
+// src/pages/index.astro
+import Layout from "../layouts/Layout.astro";
+import Calculator from "../components/Calculator.astro";
+import { getCollection } from "astro:content";
+import { recipeJsonLd } from "../lib/seo";
+
+const recipes = (await getCollection("recipes")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const featured = recipes[0];
+const base = import.meta.env.BASE_URL;
+
+const ld = featured ? recipeJsonLd(featured) : null;
+---
+
+<Layout
+  title="mapizzaioli — Calculadora de masa para pizza"
+  description="Calculá la masa de pizza perfecta: harina, hidratación, tiempo y temperatura. Receta con biga de 24 horas e impresión en PDF."
+>
+  <main>
+    <section class="hero">
+      <div class="container hero__inner">
+        <p class="hero__eyebrow">Harina · agua · levadura · tiempo</p>
+        <h1 class="hero__title">Masa perfecta,<br />calculada al gramo</h1>
+        <p class="hero__subtitle">
+          Ingresá la harina, la hidratación y las condiciones de fermentación.
+          La calculadora determina la levadura justa y arma la receta con biga,
+          lista para imprimir o guardar en PDF.
+        </p>
+      </div>
+    </section>
+
+    {
+      featured && (
+        <div class="container">
+          <Calculator
+            title={featured.data.title}
+            description={featured.data.description}
+            defaults={{
+              flourGrams: featured.data.flourGrams,
+              hydrationPercent: featured.data.hydrationPercent,
+              fermentationHours: featured.data.fermentationHours,
+              fermentationTempC: featured.data.fermentationTempC,
+            }}
+            steps={featured.data.steps}
+          />
+        </div>
+      )
+    }
+  </main>
+
+  {
+    ld && (
+      <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+    )
+  }
+</Layout>
+
+<style>
+  .hero {
+    padding-block: var(--spacing-3xl) var(--spacing-2xl);
+  }
+  .hero__inner {
+    text-align: center;
+  }
+  .hero__eyebrow {
+    color: var(--color-brand-primary);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: var(--font-size-sm);
+    margin: 0 0 var(--spacing-md);
+  }
+  .hero__title {
+    font-size: var(--font-size-heading-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+  .hero__subtitle {
+    color: var(--color-text-secondary);
+    max-width: 52ch;
+    margin: 0 auto;
+    font-size: var(--font-size-lg);
+  }
+</style>

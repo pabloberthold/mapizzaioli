@@ -1,0 +1,74 @@
+---
+// src/components/RecipeCard.astro
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  href: string;
+  entry: CollectionEntry<"recipes">;
+}
+
+const { href, entry } = Astro.props;
+const { title, description, hydrationPercent, fermentationHours, fermentationTempC } =
+  entry.data;
+---
+
+<a class="recipe-card" href={href}>
+  <h3 class="recipe-card__title">{title}</h3>
+  <p class="recipe-card__description">{description}</p>
+  <ul class="recipe-card__meta">
+    <li>{hydrationPercent}% hidratación</li>
+    <li>{fermentationHours} h</li>
+    <li>{fermentationTempC} °C</li>
+  </ul>
+  <span class="recipe-card__cta" aria-hidden="true">Calcular →</span>
+</a>
+
+<style>
+  .recipe-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xl);
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg);
+    color: var(--color-text-primary);
+    text-decoration: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  }
+  .recipe-card:hover {
+    text-decoration: none;
+    color: var(--color-text-primary);
+    border-color: var(--color-brand-primary);
+    box-shadow: 0 12px 32px -16px rgba(31, 27, 22, 0.24);
+    transform: translateY(-2px);
+  }
+  .recipe-card__title {
+    font-size: var(--font-size-heading-sm);
+    margin: 0;
+  }
+  .recipe-card__description {
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+  .recipe-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+  .recipe-card__meta li {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--color-surface-highlight);
+    border-radius: var(--radius-full);
+  }
+  .recipe-card__cta {
+    margin-top: var(--spacing-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-brand-primary);
+  }
+</style>

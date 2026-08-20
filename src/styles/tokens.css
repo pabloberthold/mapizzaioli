@@ -1,0 +1,57 @@
+/* src/styles/tokens.css
+ * Tokens base vendoreados del AI Workspace (design-system/tokens/)
+ * + paleta de marca de mapizzaioli (fusión de colores de las banderas
+ * italiana y alemana sobre base neutra cálida).
+ * Nombrado semántico, no basado en el valor visual — standards/naming.md.
+ * Redefinir bajo [data-theme="dark"] para dark mode, nunca duplicar componentes.
+ */
+
+:root {
+  /* Superficie (papel / masa) */
+  --color-surface-base: #faf6ef;
+  --color-surface-raised: #ffffff;
+  --color-surface-highlight: #f1e8d9;
+
+  /* Texto */
+  --color-text-primary: #1f1b16;
+  --color-text-secondary: #6b6259;
+  --color-text-inverse: #ffffff;
+
+  /* Marca */
+  --color-brand-primary: #b3232a;        /* rojo (IT/DE) */
+  --color-brand-primary-hover: #921b21;
+  --color-brand-secondary: #1c6b3c;      /* verde (IT) */
+  --color-brand-accent: #c99b3f;         /* dorado (DE), uso acotado */
+
+  /* Estado */
+  --color-state-success: #2f855a;
+  --color-state-warning: #b7791f;
+  --color-state-error: #c53030;
+
+  /* Bordes / foco */
+  --color-border-default: #e6ddce;
+  --color-focus-ring: #b3232a;
+
+  /* Bandera — solo para el motivo tricolor, uso decorativo acotado */
+  --color-flag-italy-green: #008c45;
+  --color-flag-italy-red: #cd212a;
+  --color-flag-germany-gold: #f2c230;
+}
+
+[data-theme="dark"] {
+  --color-surface-base: #181512;
+  --color-surface-raised: #221d18;
+  --color-surface-highlight: #2d251c;
+
+  --color-text-primary: #f3ede3;
+  --color-text-secondary: #b5ab9c;
+  --color-text-inverse: #1f1b16;
+
+  --color-brand-primary: #d94a51;
+  --color-brand-primary-hover: #e26a70;
+  --color-brand-secondary: #4ca06e;
+  --color-brand-accent: #e0b86a;
+
+  --color-border-default: #3a322a;
+  --color-focus-ring: #d94a51;
+}

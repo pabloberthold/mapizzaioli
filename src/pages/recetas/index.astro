@@ -1,0 +1,64 @@
+---
+// src/pages/recetas/index.astro
+import Layout from "../../layouts/Layout.astro";
+import RecipeCard from "../../components/RecipeCard.astro";
+import { getCollection } from "astro:content";
+
+const recipes = (await getCollection("recipes")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout
+  title="Recetas — mapizzaioli"
+  description="Todas las recetas de masa disponibles en mapizzaioli, con calculadora de hidratación y fermentación."
+>
+  <main>
+    <section class="page-head">
+      <div class="container">
+        <h1 class="page-head__title">Recetas</h1>
+        <p class="page-head__subtitle">
+          Elegí una receta y ajustá los valores para tu masa.
+        </p>
+      </div>
+    </section>
+
+    <section class="container">
+      <ul class="recipe-grid">
+        {
+          recipes.map((entry) => (
+            <li>
+              <RecipeCard
+                href={`${base}recetas/${entry.slug}/`}
+                entry={entry}
+              />
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .page-head {
+    padding-block: var(--spacing-2xl);
+  }
+  .page-head__title {
+    font-size: var(--font-size-heading-md);
+    margin-bottom: var(--spacing-sm);
+  }
+  .page-head__subtitle {
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+  .recipe-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--grid-gap);
+  }
+</style>
