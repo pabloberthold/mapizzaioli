@@ -104,16 +104,25 @@
   margin: 0;
   padding: 0;
 }
-.popurri-global-results a {
+.popurri-global-results a,
+.popurri-global-results button.popurri-global-results__item {
   display: flex;
   align-items: baseline;
   gap: var(--spacing-sm);
+  width: 100%;
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--radius-sm);
   color: var(--color-text-primary);
   text-decoration: none;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
-.popurri-global-results a:hover {
+.popurri-global-results a:hover,
+.popurri-global-results button.popurri-global-results__item:hover {
   background: var(--color-surface-highlight);
   color: var(--color-text-primary);
   text-decoration: none;
@@ -181,7 +190,8 @@
   border-top: 1px solid var(--color-border-default);
   line-height: var(--line-height-relaxed);
 }
-.popurri-card__body h4 {
+.popurri-card__body h4,
+.popurri-modal__body h4 {
   font-size: var(--font-size-sm);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -190,7 +200,8 @@
   font-family: var(--font-family-base);
   font-weight: var(--font-weight-bold);
 }
-.popurri-card__body p {
+.popurri-card__body p,
+.popurri-modal__body p {
   margin: 0 0 var(--spacing-sm);
 }
 .popurri-meta {
@@ -213,6 +224,92 @@
   margin-top: var(--spacing-md);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
+}
+
+/* --- Modal de receta (búsqueda global) --- */
+.popurri-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: var(--spacing-lg);
+}
+.popurri-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-text-primary) 45%, transparent);
+  backdrop-filter: blur(2px);
+}
+.popurri-modal__panel {
+  position: relative;
+  width: min(720px, 100%);
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 64px -24px rgba(31, 27, 22, 0.5);
+  overflow: hidden;
+}
+.popurri-modal__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border-default);
+}
+.popurri-modal__cat {
+  margin: 0 0 var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-brand-primary);
+  font-weight: var(--font-weight-bold);
+}
+.popurri-modal__title {
+  font-size: var(--font-size-heading-sm);
+  margin: 0;
+}
+.popurri-modal__close {
+  flex: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-base);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
+  line-height: 1;
+  cursor: pointer;
+}
+.popurri-modal__close:hover {
+  color: var(--color-brand-primary);
+  border-color: var(--color-brand-primary);
+}
+.popurri-modal__body {
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+  line-height: var(--line-height-relaxed);
+}
+.popurri-modal__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+}
+.popurri-modal__titles {
+  min-width: 0;
+}
+
+/* --- Impresión: el modal no imprime --- */
+@media print {
+  .popurri-modal {
+    display: none !important;
+  }
 }
 
 /* --- Cargar más / vacío --- */

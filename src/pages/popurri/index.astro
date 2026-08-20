@@ -6,6 +6,7 @@ import "../../styles/popurri.css";
 
 const base = import.meta.env.BASE_URL;
 const TOTAL = POPURRI_CATEGORIES.reduce((acc, c) => acc + c.count, 0);
+const CATALOG = POPURRI_CATEGORIES.map((c) => ({ id: c.id, url: c.url }));
 ---
 
 <Layout
@@ -13,12 +14,13 @@ const TOTAL = POPURRI_CATEGORIES.reduce((acc, c) => acc + c.count, 0);
   description={`Explorá las ${TOTAL} recetas de Popurrí (Cocineros Argentinos) organizadas en ${POPURRI_CATEGORIES.length} categorías, con buscador.`}
 >
   <main>
+    <script type="application/json" id="popurri-catalog" set:html={JSON.stringify(CATALOG)} />
     <section class="container popurri-head texture-flour">
       <h1 class="popurri-head__title">Popurrí</h1>
       <p class="popurri-head__subtitle">
         {TOTAL.toLocaleString("es-AR")} recetas de Cocineros Argentinos,
         recopiladas y clasificadas en {POPURRI_CATEGORIES.length} categorías.
-        Buscá por nombre o ingrediente, después elegí una categoría para ver el detalle.
+        Buscá por nombre o ingrediente y hacé clic en un resultado para abrir la receta.
       </p>
 
       <div class="popurri-search">
@@ -81,8 +83,11 @@ const TOTAL = POPURRI_CATEGORIES.reduce((acc, c) => acc + c.count, 0);
 </style>
 
 <script>
-  import { normalize, esc } from "../../lib/popurri";
+  import { normalize, esc, renderRecipeText } from "../../lib/popurri";
   import DATA_URL from "../../data/popurri/index.json?url";
+
+  const CATALOG = JSON.parse(document.getElementById("popurri-catalog").textContent);
+
   const input = document.getElementById("popurri-global-search");
   const wrap = document.getElementById("popurri-global-results-wrap");
   const listEl = document.getElementById("popurri-global-results");
@@ -90,6 +95,7 @@ const TOTAL = POPURRI_CATEGORIES.reduce((acc, c) => acc + c.count, 0);
   const countEl = document.getElementById("popurri-global-count");
 
   let index = null;
+  const cache = new Map();
 
   async function loadIndex() {
     if (index) return index;
@@ -98,12 +104,76 @@ const TOTAL = POPURRI_CATEGORIES.reduce((acc, c) => acc + c.count, 0);
     return index;
   }
 
+  async function loadRecipes(catId) {
+    if (cache.has(catId)) return cache.get(catId);
+    const cat = CATALOG.find((c) => c.id === catId);
+    if (!cat) return [];
+    const res = await fetch(cat.url);
+    const data = await res.json();
+    cache.set(catId, data);
+    return data;
+  }
+
   function debounce(fn, ms) {
     let t;
     return (...args) => {
       clearTimeout(t);
       t = setTimeout(() => fn(...args), ms);
     };
+  }
+
+  async function openRecipe(catId, i) {
+    const recipes = await loadRecipes(catId);
+    const r = recipes[i];
+    if (r) showModal(catId, r);
+  }
+
+  function showModal(catId, r) {
+    const base = import.meta.env.BASE_URL;
+    const catName = CATALOG.find((c) => c.id === catId)?.name ?? "";
+    const prevActive = document.activeElement;
+
+    const modal = document.createElement("div");
+    modal.className = "popurri-modal";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.innerHTML = `
+      <div class="popurri-modal__backdrop" data-popurri-close></div>
+      <div class="popurri-modal__panel">
+        <header class="popurri-modal__head">
+          <div class="popurri-modal__titles">
+            <p class="popurri-modal__cat">${esc(catName)}</p>
+            <h2 class="popurri-modal__title">${esc(r.title)}</h2>
+          </div>
+          <button class="popurri-modal__close" data-popurri-close aria-label="Cerrar">×</button>
+        </header>
+        <div class="popurri-modal__body">
+          ${renderRecipeText(r)}
+          <p class="popurri-modal__links">
+            <a class="popurri-ext" href="${base}popurri/${catId}/?open=${r.i}">Ver dentro de la categoría →</a>
+            <a class="popurri-ext" href="${esc(r.url)}" target="_blank" rel="noopener">Ver en Cocineros Argentinos ↗</a>
+          </p>
+        </div>
+      </div>
+    `;
+
+    const close = () => {
+      document.removeEventListener("keydown", onKey);
+      modal.remove();
+      document.body.style.overflow = "";
+      prevActive?.focus?.();
+    };
+    const onKey = (e) => {
+      if (e.key === "Escape") close();
+    };
+
+    modal.querySelectorAll("[data-popurri-close]").forEach((el) => {
+      el.addEventListener("click", close);
+    });
+    document.addEventListener("keydown", onKey);
+    document.body.appendChild(modal);
+    document.body.style.overflow = "hidden";
+    modal.querySelector(".popurri-modal__close")?.focus();
   }
 
   input.addEventListener(
@@ -124,10 +194,12 @@ const TOTAL = POPURRI_CATEGORIES.reduce((acc, c) => acc + c.count, 0);
       countEl.textContent = `${results.length} ${results.length === 1 ? "resultado" : "resultados"}`;
       for (const r of results) {
         const li = document.createElement("li");
-        const a = document.createElement("a");
-        a.href = `${import.meta.env.BASE_URL}popurri/${r.c}/?open=${r.i}`;
-        a.innerHTML = `<span class="popurri-global-results__title">${esc(r.t)}</span><span class="popurri-global-results__cat">${esc(r.c)}</span>`;
-        li.appendChild(a);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "popurri-global-results__item";
+        btn.innerHTML = `<span class="popurri-global-results__title">${esc(r.t)}</span><span class="popurri-global-results__cat">${esc(r.c)}</span>`;
+        btn.addEventListener("click", () => openRecipe(r.c, r.i));
+        li.appendChild(btn);
         listEl.appendChild(li);
       }
       wrap.hidden = false;
