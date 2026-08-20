@@ -8,9 +8,11 @@ interface Props {
   ingredients: { name: string; amount: string }[];
   steps: string[];
   note?: string;
+  image?: { src: string; credit?: string; alt?: string };
 }
 
-const { title, description, ingredients, steps, note } = Astro.props;
+const { title, description, ingredients, steps, note, image } = Astro.props;
+const base = import.meta.env.BASE_URL;
 const hasIngredients = ingredients.length > 0;
 ---
 
@@ -20,6 +22,15 @@ const hasIngredients = ingredients.length > 0;
       <h1 class="static-recipe__title">{title}</h1>
       <p class="static-recipe__description">{description}</p>
     </header>
+
+    {
+      image && (
+        <figure class="recipe-figure">
+          <img src={`${base}${image.src}`} alt={image.alt ?? ""} loading="lazy" />
+          {image.credit && <figcaption class="recipe-figure__credit">{image.credit}</figcaption>}
+        </figure>
+      )
+    }
 
     {
       hasIngredients && (
@@ -88,6 +99,26 @@ const hasIngredients = ingredients.length > 0;
 
   .static-recipe__body {
     padding: var(--spacing-xl);
+  }
+
+  .recipe-figure {
+    margin: 0;
+    padding: var(--spacing-xl) var(--spacing-xl) 0;
+  }
+  .recipe-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 460px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-default);
+  }
+  .recipe-figure__credit {
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    text-align: right;
   }
   .static-recipe__body + .static-recipe__body {
     padding-top: 0;

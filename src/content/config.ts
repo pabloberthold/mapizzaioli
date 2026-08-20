@@ -36,6 +36,14 @@ const recipes = defineCollection({
       .optional(),
 
     note: z.string().optional(),
+
+    image: z
+      .object({
+        src: z.string(),
+        credit: z.string().optional(),
+        alt: z.string().optional(),
+      })
+      .optional(),
   }),
 });
 

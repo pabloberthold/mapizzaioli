@@ -20,7 +20,7 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-const { title, description, steps, calculator, ingredients, note } = entry.data;
+const { title, description, steps, calculator, ingredients, note, image } = entry.data;
 
 const base = import.meta.env.BASE_URL;
 const ld = recipeJsonLd(entry);
@@ -47,6 +47,7 @@ const ld = recipeJsonLd(entry);
                   restMinutes: calculator.restMinutes,
                 }}
                 steps={steps}
+                image={image}
               />
             ) : (
               <Calculator
@@ -59,6 +60,7 @@ const ld = recipeJsonLd(entry);
                   fermentationTempC: calculator.fermentationTempC,
                 }}
                 steps={steps}
+                image={image}
               />
             )
           ) : (
@@ -68,6 +70,7 @@ const ld = recipeJsonLd(entry);
               ingredients={ingredients ?? []}
               steps={steps}
               note={note}
+              image={image}
             />
           )
         }

@@ -9,6 +9,10 @@ calculator:
   hydrationPercent: 65
   fermentationHours: 24
   fermentationTempC: 5
+image:
+  src: pizza-napolitana-horno.jpg
+  credit: "Foto: Tony Webster / Flickr — CC BY 2.0"
+  alt: "Pizza napolitana recién salida del horno de barro, con borde dorado y quemado a la piedra."
 steps:
   - "En un bowl amplio, poné la harina y hacé un hueco en el centro. Disolvé la levadura y la sal en la mayor parte del agua y vertélas al hueco; reservá un poco de agua por si hay que ajustar. Integra desde el centro hacia afuera con la mano, arrastrando la harina, hasta lograr una masa áspera y sin rastros secos."
   - "Agregá el aceite en hilo y amasá con firmeza: plegá, estirá y golpeá suavemente. Seguí hasta que la masa quede lisa, elástica y se despegue de la mesa —la clásica 'ventana de gluten'—, porque es ese gluten el que le da fuerza y aire a la pizza."

@@ -15,9 +15,11 @@ interface Props {
   description: string;
   defaults: { flourGrams: number; restMinutes: number };
   steps: string[];
+  image?: { src: string; credit?: string; alt?: string };
 }
 
-const { title, description, defaults, steps } = Astro.props;
+const { title, description, defaults, steps, image } = Astro.props;
+const base = import.meta.env.BASE_URL;
 const result = computeExpress(defaults);
 const hasSteps = steps.length > 0;
 ---
@@ -81,6 +83,15 @@ const hasSteps = steps.length > 0;
         <div class="result-card"><dt>Orégano</dt><dd class="result-card__text">a gusto</dd></div>
       </dl>
     </div>
+
+    {
+      image && (
+        <figure class="recipe-figure">
+          <img src={`${base}${image.src}`} alt={image.alt ?? ""} loading="lazy" />
+          {image.credit && <figcaption class="recipe-figure__credit">{image.credit}</figcaption>}
+        </figure>
+      )
+    }
 
     {
       hasSteps && (
@@ -325,8 +336,28 @@ const hasSteps = steps.length > 0;
     font-variant-numeric: tabular-nums;
   }
 
+  .recipe-figure {
+    margin: 0;
+    padding: var(--spacing-xl) var(--spacing-xl) 0;
+  }
+  .recipe-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 460px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-default);
+  }
+  .recipe-figure__credit {
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    text-align: right;
+  }
+
   .recipe-steps {
-    padding: 0 var(--spacing-xl) var(--spacing-xl);
+    padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-xl);
   }
   .steps {
     margin: 0;
