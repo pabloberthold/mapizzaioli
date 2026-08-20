@@ -1,0 +1,182 @@
+---
+// src/pages/popurri/[categoria].astro
+import Layout from "../../layouts/Layout.astro";
+import { POPURRI_CATEGORIES } from "../../data/popurri/manifest";
+import "../../styles/popurri.css";
+
+export function getStaticPaths() {
+  return POPURRI_CATEGORIES.map((category) => ({
+    params: { categoria: category.id },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout
+  title={`${category.name} — Popurrí — mapizzaioli`}
+  description={`${category.count} recetas de ${category.name} (Cocineros Argentinos) con buscador.`}
+>
+  <main data-popurri-url={category.url}>
+    <section class="container popurri-head">
+      <a class="popurri-back" href={`${base}popurri/`}>← Popurrí</a>
+      <h1 class="popurri-head__title">{category.name}</h1>
+      <p class="popurri-head__subtitle">
+        {category.count.toLocaleString("es-AR")} recetas de Cocineros Argentinos.
+        Usá el buscador para filtrar y hacé clic en una receta para ver los ingredientes
+        y la preparación.
+      </p>
+
+      <div class="popurri-search">
+        <span class="popurri-search__icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.7" y2="16.7" />
+          </svg>
+        </span>
+        <input
+          id="popurri-search"
+          class="popurri-search__input"
+          type="search"
+          placeholder={`Buscar en ${category.name}…`}
+          autocomplete="off"
+          aria-label={`Buscar recetas en ${category.name}`}
+        />
+        <p id="popurri-count" class="popurri-search__count" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="container">
+      <ul class="popurri-list" id="popurri-list"></ul>
+      <p class="popurri-empty" id="popurri-empty" hidden>Sin resultados. Probá con otro término.</p>
+      <button class="popurri-more" id="popurri-more" hidden>Cargar más recetas</button>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .popurri-list {
+    padding-bottom: var(--spacing-2xl);
+  }
+</style>
+
+<script>
+  import { normalize, esc, renderRecipeText } from "../../lib/popurri";
+
+  const DATA_URL = document.querySelector("main").dataset.popurriUrl;
+  const STEP = 60;
+
+  const input = document.getElementById("popurri-search");
+  const listEl = document.getElementById("popurri-list");
+  const emptyEl = document.getElementById("popurri-empty");
+  const moreEl = document.getElementById("popurri-more");
+  const countEl = document.getElementById("popurri-count");
+
+  let recipes = [];
+  let norms = [];
+  let current = []; // índices filtrados/ordenados
+  let visible = 0;
+
+  function debounce(fn, ms) {
+    let t;
+    return (...args) => {
+      clearTimeout(t);
+      t = setTimeout(() => fn(...args), ms);
+    };
+  }
+
+  function compareTitles(a, b) {
+    return a.title.localeCompare(b.title, "es");
+  }
+
+  function apply() {
+    const q = normalize(input.value.trim());
+    let indices = recipes.map((_, i) => i);
+    if (q) {
+      indices = indices.filter((i) => norms[i].includes(q));
+      indices.sort((a, b) => {
+        const at = norms[a].startsWith(q) ? 0 : 1;
+        const bt = norms[b].startsWith(q) ? 0 : 1;
+        if (at !== bt) return at - bt;
+        return compareTitles(recipes[a], recipes[b]);
+      });
+    } else {
+      indices.sort((a, b) => compareTitles(recipes[a], recipes[b]));
+    }
+    current = indices;
+    visible = Math.min(STEP, current.length);
+    render();
+    countEl.textContent = `${current.length} ${current.length === 1 ? "receta" : "recetas"}`;
+    moreEl.hidden = current.length <= visible;
+  }
+
+  function render() {
+    const frag = document.createDocumentFragment();
+    for (const i of current.slice(0, visible)) {
+      frag.appendChild(card(recipes[i]));
+    }
+    listEl.replaceChildren(frag);
+    moreEl.hidden = current.length <= visible;
+  }
+
+  function card(r) {
+    const li = document.createElement("li");
+    li.className = "popurri-card";
+    li.dataset.i = String(r.i);
+    const head = document.createElement("button");
+    head.className = "popurri-card__head";
+    head.setAttribute("aria-expanded", "false");
+    head.innerHTML = `<h3 class="popurri-card__title">${esc(r.title)}</h3><span class="popurri-card__chev" aria-hidden="true">▾</span>`;
+    const body = document.createElement("div");
+    body.className = "popurri-card__body";
+    body.hidden = true;
+    head.addEventListener("click", () => {
+      const open = !body.hidden;
+      body.hidden = open;
+      head.setAttribute("aria-expanded", String(!open));
+      li.classList.toggle("open", !open);
+      if (open && !body.innerHTML) {
+        body.innerHTML =
+          renderRecipeText(r) +
+          `<a class="popurri-ext" href="${esc(r.url)}" target="_blank" rel="noopener">Ver en Cocineros Argentinos ↗</a>`;
+      }
+    });
+    li.appendChild(head);
+    li.appendChild(body);
+    return li;
+  }
+
+  function expandByIndex(i) {
+    const node = listEl.querySelector(`[data-i="${i}"]`);
+    const r = recipes[i];
+    if (node && r) {
+      node.querySelector(".popurri-card__head").click();
+      node.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+  }
+
+  async function init() {
+    recipes = await (await fetch(DATA_URL)).json();
+    norms = recipes.map((r) => normalize(`${r.title}\n${r.text}`));
+
+    const params = new URLSearchParams(location.search);
+    const q = params.get("q");
+    if (q) input.value = q;
+    apply();
+
+    const openIdx = params.get("open");
+    if (openIdx != null && recipes[Number(openIdx)]) {
+      expandByIndex(Number(openIdx));
+    }
+  }
+
+  moreEl.addEventListener("click", () => {
+    visible = Math.min(visible + STEP, current.length);
+    render();
+  });
+
+  input.addEventListener("input", debounce(apply, 120));
+  init();
+</script>

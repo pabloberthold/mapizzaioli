@@ -1,0 +1,237 @@
+/* src/styles/popurri.css
+ * Estilos globales de la sección Popurrí (el DOM de recetas se inyecta desde JS,
+ * por eso aquí son selectores globales, no scope del componente).
+ * Todo color/espaciado/tipografía vía var(--token).
+ */
+
+/* --- Cabecera de página/categoría --- */
+.popurri-head {
+  padding-block: var(--spacing-2xl);
+}
+.popurri-head__title {
+  font-size: var(--font-size-heading-md);
+  margin-bottom: var(--spacing-sm);
+}
+.popurri-head__subtitle {
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--spacing-lg);
+  max-width: 60ch;
+}
+.popurri-back {
+  display: inline-block;
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+.popurri-back:hover {
+  color: var(--color-brand-primary);
+  text-decoration: none;
+}
+
+/* --- Buscador --- */
+.popurri-search {
+  position: relative;
+  max-width: 34rem;
+}
+.popurri-search__input {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  padding-left: 2.75rem;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-md);
+  font-family: var(--font-family-base);
+}
+.popurri-search__icon {
+  position: absolute;
+  left: var(--spacing-md);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+}
+.popurri-search__count {
+  margin-top: var(--spacing-sm);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* --- Grilla de categorías (índice) --- */
+.popurri-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: var(--grid-gap);
+}
+.popurri-grid a {
+  display: block;
+  padding: var(--spacing-lg);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.popurri-grid a:hover {
+  color: var(--color-text-primary);
+  text-decoration: none;
+  border-color: var(--color-brand-primary);
+  transform: translateY(-2px);
+}
+.popurri-grid__name {
+  font-family: var(--font-family-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-md);
+  margin: 0 0 var(--spacing-xs);
+}
+.popurri-grid__count {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+/* --- Resultados de búsqueda global (índice) --- */
+.popurri-global-results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.popurri-global-results a {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+.popurri-global-results a:hover {
+  background: var(--color-surface-highlight);
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+.popurri-global-results__title {
+  font-weight: var(--font-weight-medium);
+}
+.popurri-global-results__cat {
+  flex: none;
+  color: var(--color-brand-primary);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* --- Lista de recetas (página de categoría) --- */
+.popurri-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--spacing-md);
+}
+.popurri-card {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.popurri-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+}
+.popurri-card__head:hover {
+  background: var(--color-surface-highlight);
+}
+.popurri-card__title {
+  font-family: var(--font-family-heading);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-md);
+  margin: 0;
+  color: var(--color-text-primary);
+}
+.popurri-card__chev {
+  flex: none;
+  color: var(--color-text-secondary);
+  transition: transform 0.15s ease;
+}
+.popurri-card.open .popurri-card__chev {
+  transform: rotate(180deg);
+}
+.popurri-card__body {
+  padding: 0 var(--spacing-lg) var(--spacing-lg);
+  border-top: 1px solid var(--color-border-default);
+  line-height: var(--line-height-relaxed);
+}
+.popurri-card__body h4 {
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-brand-primary);
+  margin: var(--spacing-lg) 0 var(--spacing-sm);
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-bold);
+}
+.popurri-card__body p {
+  margin: 0 0 var(--spacing-sm);
+}
+.popurri-meta {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+.popurri-ul {
+  margin: 0 0 var(--spacing-md);
+  padding-left: var(--spacing-lg);
+}
+.popurri-ol {
+  margin: 0 0 var(--spacing-md);
+  padding-left: var(--spacing-xl);
+}
+.popurri-ol li {
+  margin-bottom: var(--spacing-xs);
+}
+.popurri-ext {
+  display: inline-block;
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+/* --- Cargar más / vacío --- */
+.popurri-more {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+}
+.popurri-more:hover {
+  border-color: var(--color-brand-primary);
+  color: var(--color-brand-primary);
+}
+.popurri-empty {
+  color: var(--color-text-secondary);
+  text-align: center;
+  padding-block: var(--spacing-2xl);
+}

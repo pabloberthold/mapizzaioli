@@ -1,0 +1,136 @@
+---
+// src/pages/popurri/index.astro
+import Layout from "../../layouts/Layout.astro";
+import { POPURRI_CATEGORIES } from "../../data/popurri/manifest";
+import "../../styles/popurri.css";
+
+const base = import.meta.env.BASE_URL;
+const TOTAL = POPURRI_CATEGORIES.reduce((acc, c) => acc + c.count, 0);
+---
+
+<Layout
+  title="Popurrí — mapizzaioli"
+  description={`Explorá las ${TOTAL} recetas de Popurrí (Cocineros Argentinos) organizadas en ${POPURRI_CATEGORIES.length} categorías, con buscador.`}
+>
+  <main>
+    <section class="container popurri-head">
+      <h1 class="popurri-head__title">Popurrí</h1>
+      <p class="popurri-head__subtitle">
+        {TOTAL.toLocaleString("es-AR")} recetas de Cocineros Argentinos,
+        recopiladas y clasificadas en {POPURRI_CATEGORIES.length} categorías.
+        Buscá por nombre o ingrediente, después elegí una categoría para ver el detalle.
+      </p>
+
+      <div class="popurri-search">
+        <span class="popurri-search__icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.7" y2="16.7" />
+          </svg>
+        </span>
+        <input
+          id="popurri-global-search"
+          class="popurri-search__input"
+          type="search"
+          placeholder={`Buscar en ${TOTAL.toLocaleString("es-AR")} recetas…`}
+          autocomplete="off"
+          aria-label="Buscar recetas en Popurrí"
+        />
+        <p id="popurri-global-count" class="popurri-search__count" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="container popurri-global" id="popurri-global-results-wrap" hidden>
+      <ul class="popurri-global-results" id="popurri-global-results"></ul>
+      <p class="popurri-empty" id="popurri-global-empty" hidden>Sin resultados. Probá con otro término.</p>
+    </section>
+
+    <section class="container">
+      <h2 class="popurri-section">Categorías</h2>
+      <ul class="popurri-grid">
+        {POPURRI_CATEGORIES.map((c) => (
+          <li>
+            <a href={`${base}popurri/${c.id}/`}>
+              <p class="popurri-grid__name">{c.name}</p>
+              <p class="popurri-grid__count">
+                {c.count.toLocaleString("es-AR")} {c.count === 1 ? "receta" : "recetas"}
+              </p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .popurri-global {
+    padding-bottom: var(--spacing-2xl);
+  }
+  .popurri-section {
+    font-size: var(--font-size-heading-sm);
+    margin-bottom: var(--spacing-lg);
+  }
+  .popurri-section::after {
+    content: "";
+    display: block;
+    height: 1px;
+    background: var(--color-border-default);
+    margin-top: var(--spacing-sm);
+  }
+</style>
+
+<script>
+  import { normalize, esc } from "../../lib/popurri";
+  import DATA_URL from "../../data/popurri/index.json?url";
+  const input = document.getElementById("popurri-global-search");
+  const wrap = document.getElementById("popurri-global-results-wrap");
+  const listEl = document.getElementById("popurri-global-results");
+  const emptyEl = document.getElementById("popurri-global-empty");
+  const countEl = document.getElementById("popurri-global-count");
+
+  let index = null;
+
+  async function loadIndex() {
+    if (index) return index;
+    const res = await fetch(DATA_URL);
+    index = await res.json();
+    return index;
+  }
+
+  function debounce(fn, ms) {
+    let t;
+    return (...args) => {
+      clearTimeout(t);
+      t = setTimeout(() => fn(...args), ms);
+    };
+  }
+
+  input.addEventListener(
+    "input",
+    debounce(async () => {
+      const q = normalize(input.value.trim());
+      if (!q) {
+        wrap.hidden = true;
+        countEl.textContent = "";
+        listEl.replaceChildren();
+        return;
+      }
+      const idx = await loadIndex();
+      if (normalize(input.value.trim()) !== q) return;
+      const results = idx.filter((e) => normalize(e.t).includes(q)).slice(0, 25);
+      listEl.replaceChildren();
+      emptyEl.hidden = results.length > 0;
+      countEl.textContent = `${results.length} ${results.length === 1 ? "resultado" : "resultados"}`;
+      for (const r of results) {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = `${import.meta.env.BASE_URL}popurri/${r.c}/?open=${r.i}`;
+        a.innerHTML = `<span class="popurri-global-results__title">${esc(r.t)}</span><span class="popurri-global-results__cat">${esc(r.c)}</span>`;
+        li.appendChild(a);
+        listEl.appendChild(li);
+      }
+      wrap.hidden = false;
+    }, 150),
+  );
+</script>

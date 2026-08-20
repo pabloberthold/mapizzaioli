@@ -11,8 +11,9 @@ Project intent: *mapizzaioli* — calculadora de masa para pizza (Astro, alojada
 ```bash
 npm install      # instalar
 npm run dev      # dev server (localhost:4321/mapizzaioli/)
-npm run build    # build producción → dist/
-npm run preview  # preview del build
+npm run build          # build producción → dist/
+npm run preview        # preview del build
+npm run import:popurri # reimportar recetas de Cocineros Argentinos desde ~/GITLAB/chata (CHATA_ROOT=/otra/ruta para otra fuente)
 ```
 
 ## Gotchas clave
@@ -26,11 +27,12 @@ npm run preview  # preview del build
 - Dos tipos de receta en el schema (campo opcional, no exclusivo):
   - `calculator` → interactiva. `engine: "masa"` (biga, 4 inputs, usa `src/lib/dough.ts`) o `engine: "express"` (2 inputs harina/tiempo, usa `src/lib/express.ts`).
   - `ingredients` (lista `{name, amount}`) → estática (sin calculadora, ej. pan de máquina, chucrut).
-- Campo `category` (`italiana` | `alemana` | `otras`, default `otras`): agrupa el listado `/recetas/` en capítulos.
+- Campo `category` (`italiana` | `alemana` | `argentina` | `otras`, default `otras`): agrupa el listado `/recetas/` en capítulos.
+- **Popurrí** (`/popurri/`): 11.765 recetas scrapeadas de Cocineros Argentinos, datos en `src/data/popurri/` (`recipes/<cat>.json` + `index.json` + `manifest.ts` autogenerados por `scripts/import-popurri.mjs`). Páginas `/popurri/` (grilla + búsqueda global) y `/popurri/<categoria>/` (búsqueda local + recetas expandibles). El JSON se sirve como asset (`?url`) y el DOM de recetas se inyecta desde JS, por eso los estilos van en `src/styles/popurri.css` **global** (no scope).
 - Componentes por tipo: `Calculator.astro` (masa), `ExpressCalculator.astro` (express), `StaticRecipe.astro` (estática). `[slug].astro` elige según el schema; `/recetas/` agrupa por categoría.
 - Tokens de diseño en `src/styles/tokens.css` (vendoreados del AI Workspace + paleta marca IT/DE). Todo color/espaciado vía `var(--token)` — nada literal en componentes.
 - Páginas kebab-case, componentes PascalCase, lib camelCase (ver standards del AI Workspace).
 - Deploy automático: push a `main` → `.github/workflows/deploy.yml`.
 
-## Publicación (pendiente)
-Sin repo remoto aún y sin commit inicial. Próximos pasos: crear repo `mapizzaioli` en GitHub, `git add . && git commit`, push a `main`, habilitar Pages (Source: GitHub Actions).
+## Publicación
+Repo `pabloberthold/mapizzaioli`, deploy automático a GitHub Pages desde `main`.
