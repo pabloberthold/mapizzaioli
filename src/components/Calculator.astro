@@ -248,19 +248,15 @@ const hasSteps = steps.length > 0;
 
   .calculator__form {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: var(--spacing-md);
-  }
-  @media (max-width: 640px) {
-    .calculator__form {
-      grid-template-columns: repeat(2, 1fr);
-    }
   }
 
   .field {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-xs);
+    min-width: 0;
   }
   .field label {
     font-size: var(--font-size-sm);
