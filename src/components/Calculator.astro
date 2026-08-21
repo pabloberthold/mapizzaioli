@@ -23,6 +23,10 @@ const base = import.meta.env.BASE_URL;
 
 const result = computeDough(defaults);
 const hasSteps = steps.length > 0;
+
+const ballsDefault = Math.max(1, Math.round(defaults.flourGrams / 250));
+const ballWeightDefault = Math.round(defaults.flourGrams / ballsDefault / 10) * 10;
+const flourFromBalls = ballsDefault * ballWeightDefault;
 ---
 
 <section class="calculator calculator--dark" aria-label="Calculadora de receta">
@@ -41,12 +45,27 @@ const hasSteps = steps.length > 0;
       </div>
 
       <form class="calculator__form screen-only" id="calc-form" autocomplete="off">
-        <div class="field field--slider">
-          <div class="field__head">
-            <label for="inp-flour">Harina</label>
-            <span class="field__value"><b id="val-flour">{defaults.flourGrams}</b> g</span>
+        <div class="ball-box">
+          <div class="ball-box__head">
+            <span class="ball-box__title">Tamaño de bola</span>
+            <span class="field__value"><b id="val-flour-total">{flourFromBalls}</b> g de harina</span>
           </div>
-          <input id="inp-flour" type="range" min="100" max="5000" step="50" value={defaults.flourGrams} />
+          <div class="ball-box__rows">
+            <div class="field field--slider">
+              <div class="field__head">
+                <label for="inp-balls">Bolas</label>
+                <span class="field__value"><b id="val-balls">{ballsDefault}</b></span>
+              </div>
+              <input id="inp-balls" type="range" min="1" max="20" step="1" value={ballsDefault} />
+            </div>
+            <div class="field field--slider">
+              <div class="field__head">
+                <label for="inp-ballweight">Peso por bola</label>
+                <span class="field__value"><b id="val-ballweight">{ballWeightDefault}</b> g</span>
+              </div>
+              <input id="inp-ballweight" type="range" min="100" max="500" step="10" value={ballWeightDefault} />
+            </div>
+          </div>
         </div>
         <div class="field field--slider">
           <div class="field__head">
@@ -155,7 +174,8 @@ const hasSteps = steps.length > 0;
   import { computeDough, formatGrams, isValidDoughInputs } from "../lib/dough";
 
   const ids = {
-    flour: "inp-flour",
+    balls: "inp-balls",
+    ballweight: "inp-ballweight",
     hydration: "inp-hydration",
     hours: "inp-hours",
     temp: "inp-temp",
@@ -189,7 +209,8 @@ const hasSteps = steps.length > 0;
   }
 
   const sliders = [
-    { id: "inp-flour", min: 100, max: 5000, valId: "val-flour", dec: 0 },
+    { id: "inp-balls", min: 1, max: 20, valId: "val-balls", dec: 0 },
+    { id: "inp-ballweight", min: 100, max: 500, valId: "val-ballweight", dec: 0 },
     { id: "inp-hydration", min: 50, max: 90, valId: "val-hydration", dec: 0 },
     { id: "inp-temp", min: 0, max: 35, valId: "val-temp", dec: 0 },
     { id: "inp-hours", min: 1, max: 72, valId: "val-hours", dec: 1 },
@@ -207,8 +228,12 @@ const hasSteps = steps.length > 0;
   function update() {
     sliders.forEach(syncSlider);
 
+    const flourGrams = num(ids.balls) * num(ids.ballweight);
+    const flourOut = el("val-flour-total");
+    if (flourOut) flourOut.textContent = formatGrams(flourGrams);
+
     const inputs = {
-      flourGrams: num(ids.flour),
+      flourGrams,
       hydrationPercent: num(ids.hydration),
       fermentationHours: num(ids.hours),
       fermentationTempC: num(ids.temp),
@@ -251,7 +276,7 @@ const hasSteps = steps.length > 0;
     node?.addEventListener("input", update);
   });
 
-  sliders.forEach(syncSlider);
+  update();
   el("btn-print")?.addEventListener("click", () => window.print());
 </script>
 
@@ -407,10 +432,17 @@ const hasSteps = steps.length > 0;
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
+    height: 22px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
+  }
+  .calculator--dark input[type="range"]::-webkit-slider-runnable-track {
     height: 8px;
     border-radius: 999px;
-    margin: 0;
-    cursor: pointer;
     background: linear-gradient(
       to right,
       var(--calc-ember) 0%,
@@ -428,7 +460,18 @@ const hasSteps = steps.length > 0;
     background: var(--calc-cream);
     border: 3px solid var(--calc-ember);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
-    margin-top: -7px;
+    margin-top: -7px; /* (8 - 22) / 2 → centra el thumb en el track */
+  }
+  .calculator--dark input[type="range"]::-moz-range-track {
+    height: 8px;
+    border-radius: 999px;
+    background: linear-gradient(
+      to right,
+      var(--calc-ember) 0%,
+      var(--calc-gold) var(--fill, 50%),
+      var(--calc-border) var(--fill, 50%),
+      var(--calc-border) 100%
+    );
   }
   .calculator--dark input[type="range"]::-moz-range-thumb {
     width: 22px;
@@ -438,14 +481,41 @@ const hasSteps = steps.length > 0;
     border: 3px solid var(--calc-ember);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
   }
-  .calculator--dark input[type="range"]::-moz-range-track {
-    height: 8px;
-    border-radius: 999px;
-    background: transparent;
-  }
   .calculator--dark input[type="range"]:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--calc-ember) 45%, transparent);
+  }
+
+  .calculator--dark .ball-box {
+    grid-column: 1 / -1;
+    border: 1px solid var(--calc-border);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    background: rgba(244, 237, 225, 0.03);
+  }
+  .calculator--dark .ball-box__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+  }
+  .calculator--dark .ball-box__title {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--calc-cream-dim);
+  }
+  .calculator--dark .ball-box__rows {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+  }
+  @media (max-width: 640px) {
+    .calculator--dark .ball-box__rows {
+      grid-template-columns: 1fr;
+    }
   }
 
   .calculator--dark .calculator__results,
