@@ -65,14 +65,12 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
               </div>
               <input id="inp-balls" type="range" min="1" max="20" step="1" value={ballsDefault} />
             </div>
-            <div class="field field--slider">
-              <div class="field__head">
-                <label for="inp-ballweight">Peso por bola</label>
-                <span class="field__value"><b id="val-ballweight">{ballWeightDefault}</b> g</span>
-              </div>
-              <input id="inp-ballweight" type="range" min="100" max="500" step="10" value={ballWeightDefault} />
+            <div class="ball-box__readout">
+              <span class="ball-box__rlabel">Peso por bola</span>
+              <span class="field__value"><b id="val-ballweight">{Math.round(flourFromBalls / ballsDefault)}</b> g</span>
             </div>
           </div>
+          <p class="ball-box__note">Peso por bola = masa total ({formatGrams(result.total)}) ÷ bolas.</p>
         </div>
         <div class="field field--slider">
           <div class="field__head">
@@ -183,7 +181,6 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
   const ids = {
     flour: "inp-flour",
     balls: "inp-balls",
-    ballweight: "inp-ballweight",
     hydration: "inp-hydration",
     hours: "inp-hours",
     temp: "inp-temp",
@@ -219,7 +216,6 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
   const sliders = [
     { id: "inp-flour", min: 100, max: 5000, valId: "val-flour", dec: 0 },
     { id: "inp-balls", min: 1, max: 20, valId: "val-balls", dec: 0 },
-    { id: "inp-ballweight", min: 100, max: 500, valId: "val-ballweight", dec: 0 },
     { id: "inp-hydration", min: 50, max: 90, valId: "val-hydration", dec: 0 },
     { id: "inp-temp", min: 0, max: 35, valId: "val-temp", dec: 0 },
     { id: "inp-hours", min: 1, max: 72, valId: "val-hours", dec: 1 },
@@ -244,23 +240,10 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     syncSlider(s);
   }
 
-  function update(changed?: string) {
+  function update() {
     sliders.forEach(syncSlider);
 
-    let flourGrams: number;
-    if (changed === "inp-flour") {
-      let bolas = Math.round(num(ids.flour) / num(ids.ballweight));
-      bolas = Math.min(20, Math.max(1, bolas));
-      setSliderValue(sliderById("inp-balls"), bolas);
-      flourGrams = num(ids.flour);
-    } else {
-      flourGrams = num(ids.balls) * num(ids.ballweight);
-      setSliderValue(sliderById("inp-flour"), flourGrams);
-    }
-
-    const flourOut = el("val-flour-total");
-    if (flourOut) flourOut.textContent = formatGrams(flourGrams);
-
+    const flourGrams = num(ids.flour);
     const inputs = {
       flourGrams,
       hydrationPercent: num(ids.hydration),
@@ -276,6 +259,15 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     if (error) error.hidden = true;
 
     const r = computeDough(inputs);
+
+    // Peso por bola = suma de ingredientes (masa total) ÷ cantidad de bolas
+    const bolas = num(ids.balls);
+    const pesoPorBola = r.total / bolas;
+
+    const flourOut = el("val-flour-total");
+    if (flourOut) flourOut.textContent = formatGrams(flourGrams);
+    const ballOut = el("val-ballweight");
+    if (ballOut) ballOut.textContent = formatGrams(pesoPorBola);
 
     set(out.fresh, formatGrams(r.freshYeast, 2));
     set(out.dry, formatGrams(r.dryYeast, 2));
@@ -302,7 +294,7 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
 
   Object.values(ids).forEach((id) => {
     const node = el(id);
-    node?.addEventListener("input", (e) => update((e.target as HTMLElement).id));
+    node?.addEventListener("input", () => update());
   });
 
   update();
@@ -540,6 +532,25 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-lg);
+    align-items: end;
+  }
+  .calculator--dark .ball-box__readout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding-bottom: 2px;
+  }
+  .calculator--dark .ball-box__rlabel {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--calc-cream-dim);
+  }
+  .calculator--dark .ball-box__note {
+    margin: var(--spacing-md) 0 0;
+    font-size: var(--font-size-xs);
+    color: var(--calc-cream-dim);
   }
   @media (max-width: 640px) {
     .calculator--dark .ball-box__rows {
