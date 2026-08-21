@@ -11,6 +11,14 @@ const recipes = (await getCollection("recipes")).sort(
 );
 const featured = recipes[0];
 const ld = featured ? recipeJsonLd(featured) : null;
+const base = import.meta.env.BASE_URL;
+const websiteLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "ma'pizzaioli",
+  url: new URL(base, Astro.site).href,
+  description: "Calculadora de masa para pizza",
+};
 ---
 
 <Layout
@@ -68,6 +76,7 @@ const ld = featured ? recipeJsonLd(featured) : null;
       <script type="application/ld+json" set:html={JSON.stringify(ld)} />
     )
   }
+  <script type="application/ld+json" set:html={JSON.stringify(websiteLd)} />
 </Layout>
 
 <style>

@@ -44,12 +44,7 @@ const ogImage = image
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600;1,9..144,700&family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fonts self-hosted via @fontsource (no Google RTT) -->
 
     <title>{title}</title>
   </head>
@@ -89,6 +84,7 @@ const ogImage = image
           <a href={`${base}popurri/`} class:list={["site-nav__link", { "site-nav__link--active": Astro.url.pathname.startsWith(`${base}popurri`) }]}>
             Popurrí
           </a>
+          <button id="theme-toggle" class="site-nav__theme" aria-label="Cambiar tema" title="Cambiar tema">◐</button>
         </nav>
       </div>
     </header>
@@ -101,6 +97,26 @@ const ogImage = image
         <p>mapizzaioli — calculadora de masa para pizza.</p>
       </div>
     </footer>
+    <script is:inline>
+      (function () {
+        const key = "theme";
+        const saved = localStorage.getItem(key);
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (saved === "dark" || (!saved && prefersDark)) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+        document.getElementById("theme-toggle")?.addEventListener("click", () => {
+          const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+          if (isDark) {
+            document.documentElement.removeAttribute("data-theme");
+            localStorage.setItem(key, "light");
+          } else {
+            document.documentElement.setAttribute("data-theme", "dark");
+            localStorage.setItem(key, "dark");
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
 
@@ -228,6 +244,23 @@ const ogImage = image
   .site-nav__link--active {
     color: var(--color-brand-primary);
     border-bottom-color: var(--color-brand-primary);
+  }
+
+  .site-nav__theme {
+    background: none;
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-full);
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+  }
+  .site-nav__theme:hover {
+    border-color: var(--color-brand-primary);
+    color: var(--color-brand-primary);
   }
 
   .site-footer {
