@@ -96,6 +96,20 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
         <div class="field field--check">
           <label class="check-label"><input type="checkbox" id="inp-biga" checked> Usar biga (prefermento 24 h)</label>
         </div>
+        <div class="field field--slider" id="field-biga-flour">
+          <div class="field__head">
+            <label for="inp-biga-flour">Harina en biga</label>
+            <span class="field__value"><b id="val-biga-flour">75</b> %</span>
+          </div>
+          <input id="inp-biga-flour" type="range" min="50" max="90" step="1" value="75" />
+        </div>
+        <div class="field field--slider" id="field-biga-water">
+          <div class="field__head">
+            <label for="inp-biga-water">Hidratación biga</label>
+            <span class="field__value"><b id="val-biga-water">50</b> %</span>
+          </div>
+          <input id="inp-biga-water" type="range" min="30" max="70" step="1" value="50" />
+        </div>
         <p class="calculator__error" id="calc-error" role="alert" hidden>
           Ingresá valores mayores a cero en todos los campos.
         </p>
@@ -179,7 +193,7 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
 </section>
 
 <script>
-  import { computeDough, formatGrams, isValidDoughInputs } from "../lib/dough";
+  import { computeDough, formatGrams, isValidDoughInputs, DEFAULT_CONSTANTS } from "../lib/dough";
 
   const ids = {
     flour: "inp-flour",
@@ -187,6 +201,8 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     hydration: "inp-hydration",
     hours: "inp-hours",
     temp: "inp-temp",
+    bigaFlour: "inp-biga-flour",
+    bigaWater: "inp-biga-water",
   };
 
   const out = {
@@ -221,6 +237,8 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     { id: "inp-hydration", min: 50, max: 90, valId: "val-hydration", dec: 0, unit: "%" },
     { id: "inp-temp", min: 1, max: 35, valId: "val-temp", dec: 0, unit: "grados" },
     { id: "inp-hours", min: 1, max: 72, valId: "val-hours", dec: 1, unit: "horas" },
+    { id: "inp-biga-flour", min: 50, max: 90, valId: "val-biga-flour", dec: 0, unit: "%" },
+    { id: "inp-biga-water", min: 30, max: 70, valId: "val-biga-water", dec: 0, unit: "%" },
   ];
 
   function syncSlider(s: { id: string; min: number; max: number; valId: string; dec: number; unit: string }) {
@@ -251,7 +269,12 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     }
     if (error) error.hidden = true;
 
-    const r = computeDough(inputs);
+    const constants = {
+      ...DEFAULT_CONSTANTS,
+      bigaFlourRatio: num(ids.bigaFlour) / 100,
+      bigaWaterRatio: num(ids.bigaWater) / 100,
+    };
+    const r = computeDough(inputs, constants);
 
     // Peso por bola = suma de ingredientes (masa total) ÷ cantidad de bolas
     const bolas = num(ids.balls);
@@ -292,11 +315,18 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
 
   const bigaToggle = el("inp-biga") as HTMLInputElement | null;
   const bigaBlock = el("biga-block");
+  const fieldBigaFlour = document.getElementById("field-biga-flour");
+  const fieldBigaWater = document.getElementById("field-biga-water");
   function syncBiga() {
     const show = bigaToggle ? bigaToggle.checked : true;
     if (bigaBlock) bigaBlock.hidden = !show;
+    if (fieldBigaFlour) fieldBigaFlour.hidden = !show;
+    if (fieldBigaWater) fieldBigaWater.hidden = !show;
   }
-  bigaToggle?.addEventListener("change", syncBiga);
+  bigaToggle?.addEventListener("change", () => {
+    syncBiga();
+    update();
+  });
   syncBiga();
 
   update();

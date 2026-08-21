@@ -1,0 +1,64 @@
+---
+// src/components/CalculatorShell.astro — Shell DRY para Calculator/Express/Static
+// Extrae 65% duplicado: recipe-sheet, header, dark theme, sliders, resultados, print
+import "../styles/calculator-shared.css";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: { src: string; credit?: string; alt?: string };
+  printMeta?: string;
+}
+const { title, description, image, printMeta = "" } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+<section class="calculator calculator--dark" aria-label="Calculadora de receta">
+  <div class="recipe-sheet">
+    <header class="recipe-sheet__head">
+      <div class="print-only">
+        <p class="print-title">{title}</p>
+        <p id="print-meta" class="recipe-sheet__meta" data-print-meta>{printMeta}</p>
+      </div>
+      <div class="calculator__intro">
+        <h2 class="calculator__title">{title}</h2>
+        <p class="calculator__description">{description}</p>
+      </div>
+      <slot name="form" />
+    </header>
+
+    <slot />
+
+    {image && (
+      <figure class="recipe-figure">
+        <img src={`${base}${image.src}`} alt={image.alt ?? title} width="1280" height="768" loading="lazy" decoding="async" />
+        {image.credit && <figcaption class="recipe-figure__credit">{image.credit}</figcaption>}
+      </figure>
+    )}
+
+    <slot name="steps" />
+    <slot name="actions" />
+  </div>
+</section>
+
+<style>
+  /* Shell importa shared, pero mantiene overrides específicos si hacen falta */
+  .recipe-figure {
+    margin: 0;
+    padding: var(--spacing-xl) var(--spacing-xl) 0;
+  }
+  .recipe-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 460px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-default);
+  }
+  .recipe-figure__credit {
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    text-align: right;
+  }
+</style>
