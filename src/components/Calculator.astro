@@ -56,23 +56,23 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
         </div>
         <div class="ball-box">
           <div class="ball-box__head">
-            <span class="ball-box__title">Tamaño de bola</span>
+            <span class="ball-box__title">Tamaño del bollo</span>
             <span class="field__value"><b id="val-flour-total">{flourFromBalls}</b> g de harina</span>
           </div>
           <div class="ball-box__rows">
             <div class="field field--slider">
               <div class="field__head">
-                <label for="inp-balls">Bolas</label>
+                <label for="inp-balls">Bollos</label>
                 <span class="field__value"><b id="val-balls">{ballsDefault}</b></span>
               </div>
               <input id="inp-balls" type="range" min="1" max="20" step="1" value={ballsDefault} />
             </div>
             <div class="ball-box__readout">
-              <span class="ball-box__rlabel">Peso por bola</span>
+              <span class="ball-box__rlabel">Peso por bollo</span>
               <span class="field__value"><b id="val-ballweight">{Math.round(result.total / ballsDefault)}</b> g</span>
             </div>
           </div>
-          <p class="ball-box__note">Peso por bola = masa total ({formatGrams(result.total)}) ÷ bolas.</p>
+          <p class="ball-box__note">Peso por bollo = masa total ({formatGrams(result.total)}) ÷ bollos.</p>
         </div>
         <div class="field field--slider">
           <div class="field__head">
@@ -247,7 +247,7 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
   }
   const sliders: Array<{ id: string; min: number; max: number; valId: string; dec: number; unit: string }> = [
     { id: "inp-flour", min: 100, max: 5000, valId: "val-flour", dec: 0, unit: "gramos" },
-    { id: "inp-balls", min: 1, max: 20, valId: "val-balls", dec: 0, unit: "bolas" },
+    { id: "inp-balls", min: 1, max: 20, valId: "val-balls", dec: 0, unit: "bollos" },
     { id: "inp-hydration", min: 50, max: 90, valId: "val-hydration", dec: 0, unit: "%" },
     { id: "inp-temp", min: 1, max: 35, valId: "val-temp", dec: 0, unit: "grados" },
     { id: "inp-hours", min: 1, max: 72, valId: "val-hours", dec: 1, unit: "horas" },
@@ -292,7 +292,7 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     };
     const r = computeDough(inputs, constants);
 
-    // Peso por bola = suma de ingredientes (masa total) ÷ cantidad de bolas
+    // Peso por bollo = suma de ingredientes (masa total) ÷ cantidad de bollos
     const bolas = num(ids.balls);
     const pesoPorBola = r.total / bolas;
 
