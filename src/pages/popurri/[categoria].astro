@@ -128,7 +128,7 @@ const base = import.meta.env.BASE_URL;
     const head = document.createElement("button");
     head.className = "popurri-card__head";
     head.setAttribute("aria-expanded", "false");
-    head.innerHTML = `<h3 class="popurri-card__title">${esc(r.title)}</h3><span class="popurri-card__chev" aria-hidden="true">▾</span>`;
+    head.innerHTML = `<span class="popurri-card__title" role="heading" aria-level="3">${esc(r.title)}</span><span class="popurri-card__chev" aria-hidden="true">▾</span>`;
     const body = document.createElement("div");
     body.className = "popurri-card__body";
     body.hidden = true;
@@ -158,17 +158,25 @@ const base = import.meta.env.BASE_URL;
   }
 
   async function init() {
-    recipes = await (await fetch(DATA_URL)).json();
-    norms = recipes.map((r) => normalize(`${r.title}\n${r.text}`));
+    try {
+      const res = await fetch(DATA_URL);
+      if (!res.ok) throw new Error(String(res.status));
+      recipes = await res.json();
+      norms = recipes.map((r) => normalize(`${r.title}\n${r.text}`));
+    } catch {
+      countEl.textContent = "Error al cargar recetas.";
+      return;
+    }
 
     const params = new URLSearchParams(location.search);
     const q = params.get("q");
     if (q) input.value = q;
     apply();
 
-    const openIdx = params.get("open");
-    if (openIdx != null && recipes[Number(openIdx)]) {
-      expandByIndex(Number(openIdx));
+    const openParam = params.get("open");
+    const openIdx = Number(openParam);
+    if (openParam != null && Number.isInteger(openIdx) && openIdx >= 0 && openIdx < recipes.length) {
+      expandByIndex(openIdx);
     }
   }
 

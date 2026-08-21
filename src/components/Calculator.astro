@@ -33,8 +33,8 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
   <div class="recipe-sheet">
     <header class="recipe-sheet__head">
       <div class="print-only">
-        <h1>{title}</h1>
-        <p class="recipe-sheet__meta" data-print-meta>
+        <p class="print-title">{title}</p>
+        <p id="print-meta" class="recipe-sheet__meta" data-print-meta>
           {formatGrams(defaults.flourGrams)} g de harina · {defaults.hydrationPercent}% hidratación · {defaults.fermentationHours} h · {defaults.fermentationTempC} °C
         </p>
       </div>
@@ -91,7 +91,7 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
             <label for="inp-temp">Temperatura</label>
             <span class="field__value"><b id="val-temp">{defaults.fermentationTempC}</b> °C</span>
           </div>
-          <input id="inp-temp" type="range" min="0" max="35" step="1" value={defaults.fermentationTempC} />
+          <input id="inp-temp" type="range" min="1" max="35" step="1" value={defaults.fermentationTempC} />
         </div>
         <p class="calculator__error" id="calc-error" role="alert" hidden>
           Ingresá valores mayores a cero en todos los campos.
@@ -150,7 +150,7 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     {
       image && (
         <figure class="recipe-figure">
-          <img src={`${base}${image.src}`} alt={image.alt ?? ""} loading="lazy" />
+          <img src={`${base}${image.src}`} alt={image.alt ?? title} width="1280" height="768" loading="lazy" decoding="async" />
           {image.credit && <figcaption class="recipe-figure__credit">{image.credit}</figcaption>}
         </figure>
       )
@@ -212,32 +212,22 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     const node = el(id);
     if (node) node.textContent = text;
   }
-
-  const sliders = [
-    { id: "inp-flour", min: 100, max: 5000, valId: "val-flour", dec: 0 },
-    { id: "inp-balls", min: 1, max: 20, valId: "val-balls", dec: 0 },
-    { id: "inp-hydration", min: 50, max: 90, valId: "val-hydration", dec: 0 },
-    { id: "inp-temp", min: 0, max: 35, valId: "val-temp", dec: 0 },
-    { id: "inp-hours", min: 1, max: 72, valId: "val-hours", dec: 1 },
+  const sliders: Array<{ id: string; min: number; max: number; valId: string; dec: number; unit: string }> = [
+    { id: "inp-flour", min: 100, max: 5000, valId: "val-flour", dec: 0, unit: "gramos" },
+    { id: "inp-balls", min: 1, max: 20, valId: "val-balls", dec: 0, unit: "bolas" },
+    { id: "inp-hydration", min: 50, max: 90, valId: "val-hydration", dec: 0, unit: "%" },
+    { id: "inp-temp", min: 1, max: 35, valId: "val-temp", dec: 0, unit: "grados" },
+    { id: "inp-hours", min: 1, max: 72, valId: "val-hours", dec: 1, unit: "horas" },
   ];
-  const sliderById = (id: string) => sliders.find((s) => s.id === id);
 
-  function syncSlider(s: { id: string; min: number; max: number; valId: string; dec: number }) {
+  function syncSlider(s: { id: string; min: number; max: number; valId: string; dec: number; unit: string }) {
     const node = el(s.id) as HTMLInputElement | null;
     if (!node) return;
     const v = Number(node.value);
     node.style.setProperty("--fill", `${((v - s.min) / (s.max - s.min)) * 100}%`);
     const out = el(s.valId);
     if (out) out.textContent = v.toFixed(s.dec).replace(".", ",");
-  }
-
-  function setSliderValue(s: { id: string; min: number; max: number; valId: string; dec: number } | undefined, value: number) {
-    if (!s) return;
-    const node = el(s.id) as HTMLInputElement | null;
-    if (!node) return;
-    const clamped = Math.min(s.max, Math.max(s.min, value));
-    node.value = String(clamped);
-    syncSlider(s);
+    node.setAttribute("aria-valuetext", `${v.toFixed(s.dec).replace(".", ",")} ${s.unit}`);
   }
 
   function update() {
@@ -375,14 +365,14 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
 
   /* ---- Tema oscuro cálido (estilo landing de referencia) ---- */
   .calculator--dark {
-    --calc-ember: #ff6b2c;
-    --calc-ember-deep: #e8501a;
-    --calc-gold: #f2b24c;
-    --calc-cream: #f4ede1;
-    --calc-cream-dim: #a89c8b;
-    --calc-ink: #0c0a07;
-    --calc-surface: #171310;
-    --calc-border: #2c241b;
+    --calc-ember: var(--color-calc-ember);
+    --calc-ember-deep: var(--color-calc-ember-deep);
+    --calc-gold: var(--color-calc-gold);
+    --calc-cream: var(--color-calc-cream);
+    --calc-cream-dim: var(--color-calc-cream-dim);
+    --calc-ink: var(--color-calc-ink);
+    --calc-surface: var(--color-calc-surface);
+    --calc-border: var(--color-calc-border);
     max-width: 860px;
     margin-inline: auto;
   }
@@ -475,13 +465,13 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
   .calculator--dark input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: var(--calc-cream);
     border: 3px solid var(--calc-ember);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
-    margin-top: -7px; /* (8 - 22) / 2 → centra el thumb en el track */
+    margin-top: -8px; /* (8 - 24) / 2 */
   }
   .calculator--dark input[type="range"]::-moz-range-track {
     height: 8px;
@@ -495,8 +485,8 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     );
   }
   .calculator--dark input[type="range"]::-moz-range-thumb {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: var(--calc-cream);
     border: 3px solid var(--calc-ember);
@@ -792,7 +782,9 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
       display: block;
       margin-bottom: var(--spacing-lg);
     }
-    .print-only h1 {
+    .print-only .print-title {
+      font-family: var(--font-family-heading);
+      font-weight: var(--font-weight-bold);
       font-size: var(--font-size-heading-md);
       margin-bottom: var(--spacing-xs);
     }

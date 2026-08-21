@@ -43,6 +43,9 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 export function computeExpress(inputs: ExpressInputs): ExpressResult {
+  if (!isValidExpressInputs(inputs)) {
+    throw new RangeError("computeExpress: inputs deben ser > 0");
+  }
   const { flourGrams, restMinutes } = inputs;
   const factor = flourGrams / BASE_FLOUR;
   const t = Math.max(restMinutes, 5);

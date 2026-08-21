@@ -42,22 +42,32 @@ automático.
 
 ```
 src/
-├── content/recipes/     ← recetas (una por archivo .md, schema en content/config.ts)
-├── lib/dough.ts         ← motor de cálculo (fórmulas del Excel)
-├── lib/seo.ts           ← JSON-LD de receta
-├── components/          ← Calculator, RecipeCard
-├── layouts/             ← Layout base (header/footer/SEO)
+├── content/recipes/     ← 22 recetas (schema en src/content.config.ts, discriminatedUnion masa/express)
+├── content.config.ts    ← schema Zod (Astro 5) con validación exclusiva calculator|ingredients
+├── lib/dough.ts         ← motor masa (Excel 1:1) con guard throw si inválido
+├── lib/express.ts       ← motor express
+├── lib/seo.ts           ← JSON-LD Recipe (usa formatGrams es-AR)
+├── lib/slider.ts        ← helpers sliders
+├── components/          ← Calculator, ExpressCalculator, StaticRecipe (sliders ember/oro, panel oscuro)
+├── layouts/             ← Layout base (header, skip-link, SEO og:image con base)
 ├── pages/
-│   ├── index.astro      ← calculadora destacada
-│   └── recetas/         ← listado + detalle dinámico por slug
-└── styles/              ← tokens + global.css
+│   ├── index.astro      ← featured con branch masa/express + image
+│   ├── recetas/         ← listado agrupado + [slug] por engine
+│   └── popurri/         ← 11.765 recetas (index + [categoria] con búsqueda y modal)
+├── data/popurri/        ← recipes/*.json + index.json + manifest.ts (generado por import:popurri)
+├── styles/              ← tokens.css (--color-calc-*), global.css, popurri.css, calculator-shared
+└── public/              ← fondo1.jpeg (63kB), pizza-napolitana-horno.jpg, favicon.svg, og-default.png (1200×630)
 ```
 
 ### Agregar una receta
 
 Crear un archivo en `src/content/recipes/` con el frontmatter del schema
-(`src/content/config.ts`). La nueva receta aparece automáticamente en
+(`src/content.config.ts`). La nueva receta aparece automáticamente en
 `/recetas/` y en `/recetas/<slug>/`, sin tocar código.
+
+```bash
+npm run import:popurri # reimportar desde ~/GITLAB/chata (CHATA_ROOT=/otra/ruta)
+```
 
 ## Stack
 

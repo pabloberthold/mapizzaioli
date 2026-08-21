@@ -58,6 +58,9 @@ export function computeDough(
   inputs: DoughInputs,
   constants: DoughConstants = DEFAULT_CONSTANTS,
 ): DoughResult {
+  if (!isValidDoughInputs(inputs)) {
+    throw new RangeError("computeDough: inputs deben ser > 0");
+  }
   const { flourGrams, hydrationPercent, fermentationHours, fermentationTempC } =
     inputs;
 

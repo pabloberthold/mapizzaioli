@@ -12,8 +12,10 @@ const { title, description, image = "" } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = image
-  ? new URL(image, Astro.site).href
-  : new URL("og-default.png", Astro.site).href;
+  ? image.startsWith("http")
+    ? image
+    : new URL(`${base}${image.replace(/^\//, "")}`, Astro.site).href
+  : new URL(`${base}og-default.png`, Astro.site).href;
 ---
 
 <!doctype html>
@@ -28,12 +30,19 @@ const ogImage = image
     <link rel="sitemap" href={`${base}sitemap-index.xml`} />
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="mapizzaioli" />
+    <meta property="og:site_name" content="ma'pizzaioli" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    <meta property="og:locale" content="es_AR" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -45,6 +54,7 @@ const ogImage = image
     <title>{title}</title>
   </head>
   <body style={`--bg-url: url(${base}fondo1.jpeg)`}>
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
     <div class="tricolor" aria-hidden="true">
       <span class="tricolor__green"></span>
       <span class="tricolor__red"></span>
@@ -83,6 +93,7 @@ const ogImage = image
       </div>
     </header>
 
+    <div id="main-content" tabindex="-1"></div>
     <slot />
 
     <footer class="site-footer">
@@ -94,6 +105,27 @@ const ogImage = image
 </html>
 
 <style>
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .skip-link:focus {
+    left: var(--spacing-md);
+    top: var(--spacing-md);
+    width: auto;
+    height: auto;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--color-surface-raised);
+    color: var(--color-text-primary);
+    border: 2px solid var(--color-focus-ring);
+    border-radius: var(--radius-sm);
+    z-index: 100;
+  }
+
   .tricolor {
     display: flex;
     height: 4px;
@@ -124,6 +156,7 @@ const ogImage = image
     justify-content: space-between;
     gap: var(--spacing-lg);
     padding-block: var(--spacing-md);
+    flex-wrap: wrap;
   }
 
   .brand {

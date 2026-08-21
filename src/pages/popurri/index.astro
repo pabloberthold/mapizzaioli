@@ -99,8 +99,14 @@ const CATALOG = POPURRI_CATEGORIES.map((c) => ({ id: c.id, url: c.url }));
 
   async function loadIndex() {
     if (index) return index;
-    const res = await fetch(DATA_URL);
-    index = await res.json();
+    try {
+      const res = await fetch(DATA_URL);
+      if (!res.ok) throw new Error(String(res.status));
+      index = await res.json();
+    } catch {
+      countEl.textContent = "Error al cargar índice.";
+      return [];
+    }
     return index;
   }
 
@@ -108,10 +114,15 @@ const CATALOG = POPURRI_CATEGORIES.map((c) => ({ id: c.id, url: c.url }));
     if (cache.has(catId)) return cache.get(catId);
     const cat = CATALOG.find((c) => c.id === catId);
     if (!cat) return [];
-    const res = await fetch(cat.url);
-    const data = await res.json();
-    cache.set(catId, data);
-    return data;
+    try {
+      const res = await fetch(cat.url);
+      if (!res.ok) throw new Error(String(res.status));
+      const data = await res.json();
+      cache.set(catId, data);
+      return data;
+    } catch {
+      return [];
+    }
   }
 
   function debounce(fn, ms) {
@@ -137,13 +148,14 @@ const CATALOG = POPURRI_CATEGORIES.map((c) => ({ id: c.id, url: c.url }));
     modal.className = "popurri-modal";
     modal.setAttribute("role", "dialog");
     modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("aria-labelledby", "popurri-modal-title");
     modal.innerHTML = `
       <div class="popurri-modal__backdrop" data-popurri-close></div>
       <div class="popurri-modal__panel">
         <header class="popurri-modal__head">
           <div class="popurri-modal__titles">
             <p class="popurri-modal__cat">${esc(catName)}</p>
-            <h2 class="popurri-modal__title">${esc(r.title)}</h2>
+            <h2 id="popurri-modal-title" class="popurri-modal__title">${esc(r.title)}</h2>
           </div>
           <button class="popurri-modal__close" data-popurri-close aria-label="Cerrar">×</button>
         </header>
@@ -165,6 +177,19 @@ const CATALOG = POPURRI_CATEGORIES.map((c) => ({ id: c.id, url: c.url }));
     };
     const onKey = (e) => {
       if (e.key === "Escape") close();
+      if (e.key === "Tab") {
+        const focusable = modal.querySelectorAll('button, [href], input, [tabindex]:not([tabindex="-1"])');
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
 
     modal.querySelectorAll("[data-popurri-close]").forEach((el) => {

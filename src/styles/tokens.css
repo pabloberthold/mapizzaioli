@@ -28,6 +28,16 @@
   --color-state-warning: #b7791f;
   --color-state-error: #c53030;
 
+  /* Calculadora — panel oscuro cálido (ember/oro, usado en Calculator/Express) */
+  --color-calc-ember: #ff6b2c;
+  --color-calc-ember-deep: #e8501a;
+  --color-calc-gold: #f2b24c;
+  --color-calc-cream: #f4ede1;
+  --color-calc-cream-dim: #a89c8b;
+  --color-calc-ink: #0c0a07;
+  --color-calc-surface: #171310;
+  --color-calc-border: #2c241b;
+
   /* Bordes / foco */
   --color-border-default: #e6ddce;
   --color-focus-ring: #b3232a;

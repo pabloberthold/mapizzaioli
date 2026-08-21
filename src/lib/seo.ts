@@ -3,10 +3,10 @@
 // Ramifica según el tipo de receta: engine "masa", engine "express" o estática.
 
 import type { CollectionEntry } from "astro:content";
-import { computeDough, roundTo } from "./dough";
+import { computeDough, formatGrams, roundTo } from "./dough";
 import { computeExpress } from "./express";
 
-const g = (n: number) => `${roundTo(n, 1)} g`;
+const g = (n: number) => `${formatGrams(n, 1)} g`;
 
 export function recipeJsonLd(recipe: CollectionEntry<"recipes">) {
   const d = recipe.data;

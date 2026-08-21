@@ -28,8 +28,8 @@ const hasSteps = steps.length > 0;
   <div class="recipe-sheet">
     <header class="recipe-sheet__head">
       <div class="print-only">
-        <h1>{title}</h1>
-        <p class="recipe-sheet__meta" data-print-meta>
+        <p class="print-title">{title}</p>
+        <p id="print-meta" class="recipe-sheet__meta" data-print-meta>
           {formatGrams(defaults.flourGrams)} g de harina · reposo {defaults.restMinutes} min
         </p>
       </div>
@@ -93,7 +93,7 @@ const hasSteps = steps.length > 0;
     {
       image && (
         <figure class="recipe-figure">
-          <img src={`${base}${image.src}`} alt={image.alt ?? ""} loading="lazy" />
+          <img src={`${base}${image.src}`} alt={image.alt ?? title} width="1280" height="768" loading="lazy" decoding="async" />
           {image.credit && <figcaption class="recipe-figure__credit">{image.credit}</figcaption>}
         </figure>
       )
@@ -132,18 +132,19 @@ const hasSteps = steps.length > 0;
     if (node) node.textContent = text;
   };
 
-  const sliders = [
-    { id: "inp-flour", min: 100, max: 2000, valId: "val-flour", dec: 0 },
-    { id: "inp-time", min: 1, max: 120, valId: "val-time", dec: 0 },
+  const sliders: Array<{ id: string; min: number; max: number; valId: string; dec: number; unit: string }> = [
+    { id: "inp-flour", min: 100, max: 2000, valId: "val-flour", dec: 0, unit: "gramos" },
+    { id: "inp-time", min: 1, max: 120, valId: "val-time", dec: 0, unit: "minutos" },
   ];
 
-  function syncSlider(s: { id: string; min: number; max: number; valId: string; dec: number }) {
+  function syncSlider(s: { id: string; min: number; max: number; valId: string; dec: number; unit: string }) {
     const node = el(s.id) as HTMLInputElement | null;
     if (!node) return;
     const v = Number(node.value);
     node.style.setProperty("--fill", `${((v - s.min) / (s.max - s.min)) * 100}%`);
     const out = el(s.valId);
     if (out) out.textContent = v.toFixed(s.dec).replace(".", ",");
+    node.setAttribute("aria-valuetext", `${v.toFixed(s.dec).replace(".", ",")} ${s.unit}`);
   }
 
   function update() {
@@ -274,13 +275,13 @@ const hasSteps = steps.length > 0;
 
   /* ---- Tema oscuro cálido (estilo landing de referencia) ---- */
   .calculator--dark {
-    --calc-ember: #ff6b2c;
-    --calc-gold: #f2b24c;
-    --calc-cream: #f4ede1;
-    --calc-cream-dim: #a89c8b;
-    --calc-ink: #0c0a07;
-    --calc-surface: #171310;
-    --calc-border: #2c241b;
+    --calc-ember: var(--color-calc-ember);
+    --calc-gold: var(--color-calc-gold);
+    --calc-cream: var(--color-calc-cream);
+    --calc-cream-dim: var(--color-calc-cream-dim);
+    --calc-ink: var(--color-calc-ink);
+    --calc-surface: var(--color-calc-surface);
+    --calc-border: var(--color-calc-border);
     max-width: 860px;
     margin-inline: auto;
   }
@@ -374,13 +375,13 @@ const hasSteps = steps.length > 0;
   .calculator--dark input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: var(--calc-cream);
     border: 3px solid var(--calc-ember);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
-    margin-top: -7px;
+    margin-top: -8px;
   }
   .calculator--dark input[type="range"]::-moz-range-track {
     height: 8px;
@@ -394,8 +395,8 @@ const hasSteps = steps.length > 0;
     );
   }
   .calculator--dark input[type="range"]::-moz-range-thumb {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: var(--calc-cream);
     border: 3px solid var(--calc-ember);
@@ -619,7 +620,9 @@ const hasSteps = steps.length > 0;
       display: block;
       margin-bottom: var(--spacing-lg);
     }
-    .print-only h1 {
+    .print-only .print-title {
+      font-family: var(--font-family-heading);
+      font-weight: var(--font-weight-bold);
       font-size: var(--font-size-heading-md);
       margin-bottom: var(--spacing-xs);
     }

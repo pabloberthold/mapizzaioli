@@ -9,5 +9,6 @@ import sitemap from "@astrojs/sitemap";
 export default defineConfig({
   site: "https://pabloberthold.github.io",
   base: "/mapizzaioli/",
+  trailingSlash: "always",
   integrations: [sitemap()],
 });
