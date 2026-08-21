@@ -45,6 +45,13 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
       </div>
 
       <form class="calculator__form screen-only" id="calc-form" autocomplete="off">
+        <div class="field field--slider">
+          <div class="field__head">
+            <label for="inp-flour">Harina</label>
+            <span class="field__value"><b id="val-flour">{flourFromBalls}</b> g</span>
+          </div>
+          <input id="inp-flour" type="range" min="100" max="5000" step="10" value={flourFromBalls} />
+        </div>
         <div class="ball-box">
           <div class="ball-box__head">
             <span class="ball-box__title">Tamaño de bola</span>
@@ -174,6 +181,7 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
   import { computeDough, formatGrams, isValidDoughInputs } from "../lib/dough";
 
   const ids = {
+    flour: "inp-flour",
     balls: "inp-balls",
     ballweight: "inp-ballweight",
     hydration: "inp-hydration",
@@ -209,12 +217,14 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
   }
 
   const sliders = [
+    { id: "inp-flour", min: 100, max: 5000, valId: "val-flour", dec: 0 },
     { id: "inp-balls", min: 1, max: 20, valId: "val-balls", dec: 0 },
     { id: "inp-ballweight", min: 100, max: 500, valId: "val-ballweight", dec: 0 },
     { id: "inp-hydration", min: 50, max: 90, valId: "val-hydration", dec: 0 },
     { id: "inp-temp", min: 0, max: 35, valId: "val-temp", dec: 0 },
     { id: "inp-hours", min: 1, max: 72, valId: "val-hours", dec: 1 },
   ];
+  const sliderById = (id: string) => sliders.find((s) => s.id === id);
 
   function syncSlider(s: { id: string; min: number; max: number; valId: string; dec: number }) {
     const node = el(s.id) as HTMLInputElement | null;
@@ -225,10 +235,29 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     if (out) out.textContent = v.toFixed(s.dec).replace(".", ",");
   }
 
-  function update() {
+  function setSliderValue(s: { id: string; min: number; max: number; valId: string; dec: number } | undefined, value: number) {
+    if (!s) return;
+    const node = el(s.id) as HTMLInputElement | null;
+    if (!node) return;
+    const clamped = Math.min(s.max, Math.max(s.min, value));
+    node.value = String(clamped);
+    syncSlider(s);
+  }
+
+  function update(changed?: string) {
     sliders.forEach(syncSlider);
 
-    const flourGrams = num(ids.balls) * num(ids.ballweight);
+    let flourGrams: number;
+    if (changed === "inp-flour") {
+      let bolas = Math.round(num(ids.flour) / num(ids.ballweight));
+      bolas = Math.min(20, Math.max(1, bolas));
+      setSliderValue(sliderById("inp-balls"), bolas);
+      flourGrams = num(ids.flour);
+    } else {
+      flourGrams = num(ids.balls) * num(ids.ballweight);
+      setSliderValue(sliderById("inp-flour"), flourGrams);
+    }
+
     const flourOut = el("val-flour-total");
     if (flourOut) flourOut.textContent = formatGrams(flourGrams);
 
@@ -273,7 +302,7 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
 
   Object.values(ids).forEach((id) => {
     const node = el(id);
-    node?.addEventListener("input", update);
+    node?.addEventListener("input", (e) => update((e.target as HTMLElement).id));
   });
 
   update();
