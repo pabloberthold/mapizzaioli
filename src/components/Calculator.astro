@@ -330,13 +330,13 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
   });
 
   const bigaToggle = el("inp-biga") as HTMLInputElement | null;
-  const bigaBlock = el("biga-block");
+  const bigaWrap = el("results-biga-wrap");
   const fieldBigaFlour = document.getElementById("field-biga-flour");
   const fieldBigaWater = document.getElementById("field-biga-water");
   const fieldBigaYeast = document.getElementById("field-biga-yeast");
   function syncBiga() {
     const show = bigaToggle ? bigaToggle.checked : true;
-    if (bigaBlock) bigaBlock.hidden = !show;
+    if (bigaWrap) bigaWrap.hidden = !show;
     if (fieldBigaFlour) fieldBigaFlour.hidden = !show;
     if (fieldBigaWater) fieldBigaWater.hidden = !show;
     if (fieldBigaYeast) fieldBigaYeast.hidden = !show;
