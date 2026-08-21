@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
+      - run: npm test
       - run: npm run build
       - run: node scripts/compress-popurri.mjs || true
       - uses: actions/upload-pages-artifact@v3
