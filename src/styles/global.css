@@ -134,6 +134,10 @@ a:hover {
   border: 0;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 /* Textura "harina" — motas sutiles tipo sémola/harina sobre un resplandor
  * suave en la parte superior (cabeceras de página y hero). */
 .texture-flour {
