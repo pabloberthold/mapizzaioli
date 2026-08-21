@@ -9,6 +9,8 @@ import {
   isValidDoughInputs,
   type DoughInputs,
 } from "../lib/dough";
+import { Picture } from "astro:assets";
+import pizzaImg from "../assets/pizza-napolitana-horno.jpg";
 
 interface Props {
   title: string;
@@ -110,6 +112,13 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
           </div>
           <input id="inp-biga-water" type="range" min="30" max="70" step="1" value="50" />
         </div>
+        <div class="field field--slider" id="field-biga-yeast">
+          <div class="field__head">
+            <label for="inp-biga-yeast">Levadura en biga</label>
+            <span class="field__value"><b id="val-biga-yeast">50</b> %</span>
+          </div>
+          <input id="inp-biga-yeast" type="range" min="30" max="70" step="1" value="50" />
+        </div>
         <p class="calculator__error" id="calc-error" role="alert" hidden>
           Ingresá valores mayores a cero en todos los campos.
         </p>
@@ -167,7 +176,11 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     {
       image && (
         <figure class="recipe-figure">
-          <img src={`${base}${image.src}`} alt={image.alt ?? title} width="1280" height="768" loading="lazy" decoding="async" />
+          {image.src === "pizza-napolitana-horno.jpg" ? (
+            <Picture src={pizzaImg} alt={image.alt ?? title} widths={[400, 800, 1280]} formats={["avif", "webp"]} sizes="(max-width: 860px) 100vw, 860px" />
+          ) : (
+            <img src={`${base}${image.src}`} alt={image.alt ?? title} width="1280" height="768" loading="lazy" decoding="async" />
+          )}
           {image.credit && <figcaption class="recipe-figure__credit">{image.credit}</figcaption>}
         </figure>
       )
@@ -203,6 +216,7 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     temp: "inp-temp",
     bigaFlour: "inp-biga-flour",
     bigaWater: "inp-biga-water",
+    bigaYeast: "inp-biga-yeast",
   };
 
   const out = {
@@ -239,6 +253,7 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     { id: "inp-hours", min: 1, max: 72, valId: "val-hours", dec: 1, unit: "horas" },
     { id: "inp-biga-flour", min: 50, max: 90, valId: "val-biga-flour", dec: 0, unit: "%" },
     { id: "inp-biga-water", min: 30, max: 70, valId: "val-biga-water", dec: 0, unit: "%" },
+    { id: "inp-biga-yeast", min: 30, max: 70, valId: "val-biga-yeast", dec: 0, unit: "%" },
   ];
 
   function syncSlider(s: { id: string; min: number; max: number; valId: string; dec: number; unit: string }) {
@@ -273,6 +288,7 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
       ...DEFAULT_CONSTANTS,
       bigaFlourRatio: num(ids.bigaFlour) / 100,
       bigaWaterRatio: num(ids.bigaWater) / 100,
+      bigaYeastShare: num(ids.bigaYeast) / 100,
     };
     const r = computeDough(inputs, constants);
 
@@ -317,11 +333,13 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
   const bigaBlock = el("biga-block");
   const fieldBigaFlour = document.getElementById("field-biga-flour");
   const fieldBigaWater = document.getElementById("field-biga-water");
+  const fieldBigaYeast = document.getElementById("field-biga-yeast");
   function syncBiga() {
     const show = bigaToggle ? bigaToggle.checked : true;
     if (bigaBlock) bigaBlock.hidden = !show;
     if (fieldBigaFlour) fieldBigaFlour.hidden = !show;
     if (fieldBigaWater) fieldBigaWater.hidden = !show;
+    if (fieldBigaYeast) fieldBigaYeast.hidden = !show;
   }
   bigaToggle?.addEventListener("change", () => {
     syncBiga();
