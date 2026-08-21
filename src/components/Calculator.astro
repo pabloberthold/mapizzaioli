@@ -93,6 +93,9 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
           </div>
           <input id="inp-temp" type="range" min="1" max="35" step="1" value={defaults.fermentationTempC} />
         </div>
+        <div class="field field--check">
+          <label class="check-label"><input type="checkbox" id="inp-biga" checked> Usar biga (prefermento 24 h)</label>
+        </div>
         <p class="calculator__error" id="calc-error" role="alert" hidden>
           Ingresá valores mayores a cero en todos los campos.
         </p>
@@ -120,8 +123,8 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
         </div>
       </dl>
 
-      <div class="results-split">
-        <div class="results-block">
+      <div class="results-split" id="results-biga-wrap">
+        <div class="results-block" id="biga-block">
           <h4 class="results-block__title">Biga <span class="results-block__sub">24 horas</span></h4>
           <dl class="results-list">
             <div><dt>Harina</dt><dd><span id="res-biga-flour">{formatGrams(result.biga.flour)}</span> g</dd></div>
@@ -287,6 +290,15 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     node?.addEventListener("input", () => update());
   });
 
+  const bigaToggle = el("inp-biga") as HTMLInputElement | null;
+  const bigaBlock = el("biga-block");
+  function syncBiga() {
+    const show = bigaToggle ? bigaToggle.checked : true;
+    if (bigaBlock) bigaBlock.hidden = !show;
+  }
+  bigaToggle?.addEventListener("change", syncBiga);
+  syncBiga();
+
   update();
   el("btn-print")?.addEventListener("click", () => window.print());
 </script>
@@ -437,6 +449,23 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     font-size: var(--font-size-sm);
     color: var(--calc-cream-dim);
     margin-left: 2px;
+  }
+
+  .calculator--dark .field--check {
+    grid-column: 1 / -1;
+  }
+  .calculator--dark .check-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--calc-cream-dim);
+    cursor: pointer;
+  }
+  .calculator--dark .check-label input {
+    accent-color: var(--calc-ember);
+    width: 18px;
+    height: 18px;
   }
 
   .calculator--dark input[type="range"] {

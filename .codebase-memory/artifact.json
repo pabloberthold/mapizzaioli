@@ -1,11 +1,11 @@
 {
     "schema_version": 2,
-    "commit": "6eeb8c5e438b029f19634d4867beea6686afb960",
-    "indexed_at": "2026-08-21T15:06:54Z",
+    "commit": "a6ca0cce38bfefff51578b3dfca5a0d73bd2d8b7",
+    "indexed_at": "2026-08-21T15:15:01Z",
     "project": "home-pablo-GIT-mapizzaioli",
-    "nodes": 376,
-    "edges": 474,
-    "original_size": 1441792,
-    "compressed_size": 104695,
-    "compression_level": 9
+    "nodes": 393,
+    "edges": 501,
+    "original_size": 2031616,
+    "compressed_size": 131110,
+    "compression_level": 3
 }
