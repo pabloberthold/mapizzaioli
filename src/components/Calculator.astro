@@ -67,7 +67,7 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
             </div>
             <div class="ball-box__readout">
               <span class="ball-box__rlabel">Peso por bola</span>
-              <span class="field__value"><b id="val-ballweight">{Math.round(flourFromBalls / ballsDefault)}</b> g</span>
+              <span class="field__value"><b id="val-ballweight">{Math.round(result.total / ballsDefault)}</b> g</span>
             </div>
           </div>
           <p class="ball-box__note">Peso por bola = masa total ({formatGrams(result.total)}) ÷ bolas.</p>
