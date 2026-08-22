@@ -10,5 +10,8 @@ export default defineConfig({
   site: "https://pabloberthold.github.io",
   base: "/mapizzaioli/",
   trailingSlash: "always",
+  // Default de Astro 7 es "jsx" (puede colapsar espacios entre inline elems);
+  // se fija el comportamiento legado hasta auditar espacios visualmente.
+  compressHTML: true,
   integrations: [sitemap()],
 });
