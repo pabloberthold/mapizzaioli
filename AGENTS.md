@@ -3,7 +3,7 @@
 Project intent: *mapizzaioli* — calculadora de masa para pizza (Astro, alojada en GitHub Pages).
 
 ## Stack
-- Astro 5 (SSG estático) + `@astrojs/sitemap`. Interactividad con **JS vanilla** en `<script>` (sin framework de UI).
+- Astro 7 (SSG estático, migrado desde 5 vía `docs/migracion-astro-7.md`) + `@astrojs/sitemap`. Interactividad con **JS vanilla** en `<script>` (sin framework de UI).
 - Impresión/PDF vía `window.print()` + `@media print` (cero dependencias de PDF).
 - Creado con el AI Workspace (`/home/pablo/GIT/ai-workspace/AGENTS.md`) como orquestador — workflow `new-project`.
 
@@ -24,7 +24,7 @@ npm run import:popurri # reimportar recetas de Cocineros Argentinos desde ~/GITL
 - **Astro 7.2+ daemoniza `astro preview`/`dev` cuando detecta un agente de IA** (env `CLAUDECODE` etc.): agrega `--background`/`--json` y el proceso npm muere al instante — rompe el `webServer` de Playwright y confunde con un crash. En terminal/CI normal corre foreground. Para probarlo desde un agente: `env -u CLAUDECODE npm run preview`.
 
 ## Estructura / convenciones
-- Recetas = content collection en `src/content/recipes/` (schema en `src/content/config.ts`). **Agregar receta = crear `.md` nuevo**, aparece sola en `/recetas/` y `/recetas/<slug>/` sin tocar código.
+- Recetas = content collection en `src/content/recipes/` (schema en `src/content.config.ts`, Content Layer con `loader: glob()`). **Agregar receta = crear `.md` nuevo**, aparece sola en `/recetas/` y `/recetas/<slug>/` sin tocar código.
 - Dos tipos de receta en el schema (campo opcional, no exclusivo):
   - `calculator` → interactiva. `engine: "masa"` (biga, 4 inputs, usa `src/lib/dough.ts`) o `engine: "express"` (2 inputs harina/tiempo, usa `src/lib/express.ts`).
   - `ingredients` (lista `{name, amount}`) → estática (sin calculadora, ej. pan de máquina, chucrut).

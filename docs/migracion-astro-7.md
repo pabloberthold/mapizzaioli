@@ -1,7 +1,8 @@
 # Plan de migración: Astro 5 → 7
 
-> Estado: propuesta · Fecha: 2026-08-21 · Origen: auditoría de seguridad
-> (3 CVEs, sin parche en la rama 5.x — la única remediación es `astro@7.2.x`).
+> Estado: **ejecutada** (2026-08-22, PR #1 — etapas A y B validadas y en producción) ·
+> Origen: auditoría de seguridad (3 CVEs, sin parche en la rama 5.x — la única
+> remediación era `astro@7.2.x`).
 
 ## Contexto
 
