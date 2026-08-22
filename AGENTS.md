@@ -21,6 +21,7 @@ npm run import:popurri # reimportar recetas de Cocineros Argentinos desde ~/GITL
 - `site` = `https://pabloberthold.github.io` (username de git config). Si cambia repo/usuario, ajustar `site`+`base` y `public/robots.txt`.
 - **Fórmulas en `src/lib/dough.ts`**, transpuestas 1:1 desde `Calculo Levadura.xlsx`. La de levadura fresca (`(harina*23/hidratación)/horas/temp`) es heurística y divide por cero si hidratación/horas/temp ≤ 0 — la UI valida con `isValidDoughInputs`.
 - Formato de números: `formatGrams()` usa locale `es-AR` (coma decimal).
+- **Astro 7.2+ daemoniza `astro preview`/`dev` cuando detecta un agente de IA** (env `CLAUDECODE` etc.): agrega `--background`/`--json` y el proceso npm muere al instante — rompe el `webServer` de Playwright y confunde con un crash. En terminal/CI normal corre foreground. Para probarlo desde un agente: `env -u CLAUDECODE npm run preview`.
 
 ## Estructura / convenciones
 - Recetas = content collection en `src/content/recipes/` (schema en `src/content/config.ts`). **Agregar receta = crear `.md` nuevo**, aparece sola en `/recetas/` y `/recetas/<slug>/` sin tocar código.
