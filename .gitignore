@@ -14,5 +14,7 @@ pnpm-debug.log*
 .env.production
 # macOS
 .DS_Store
+# estado de sesión del agente (goal state, plugins)
+.opencode/
 mapizzaiolo-landing-page-design.zip
 test-results/
