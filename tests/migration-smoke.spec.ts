@@ -17,7 +17,7 @@ test("popurri: deep-link ?open=0 expande la receta", async ({ page }) => {
   await page.goto("/mapizzaioli/popurri/apto-celiaco/?open=0");
   const body = page.locator(".popurri-card.open .popurri-card__body");
   await expect(body).toBeVisible();
-  await expect(body.locator("a.popurri-ext").first()).toBeVisible();
+  await expect(body.locator(".popurri-credit")).toHaveText("Receta de Cocineros Argentinos");
 });
 
 test("calculadora express: slider de harina actualiza valor", async ({ page }) => {

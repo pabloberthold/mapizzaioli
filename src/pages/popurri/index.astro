@@ -163,7 +163,7 @@ const CATALOG = POPURRI_CATEGORIES.map((c) => ({ id: c.id, url: c.url }));
           ${renderRecipeText(r)}
           <p class="popurri-modal__links">
             <a class="popurri-ext" href="${base}popurri/${catId}/?open=${r.i}">Ver dentro de la categoría →</a>
-            <a class="popurri-ext" href="${esc(r.url)}" target="_blank" rel="noopener">Ver en Cocineros Argentinos ↗</a>
+            <span class="popurri-credit">Receta de Cocineros Argentinos</span>
           </p>
         </div>
       </div>

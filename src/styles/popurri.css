@@ -225,6 +225,14 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
 }
+.popurri-credit {
+  display: inline-block;
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
 
 /* --- Modal de receta (búsqueda global) --- */
 .popurri-modal {

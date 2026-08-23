@@ -140,7 +140,7 @@ const base = import.meta.env.BASE_URL;
       if (show && !body.innerHTML) {
         body.innerHTML =
           renderRecipeText(r) +
-          `<a class="popurri-ext" href="${esc(r.url)}" target="_blank" rel="noopener">Ver en Cocineros Argentinos ↗</a>`;
+          `<p class="popurri-credit">Receta de Cocineros Argentinos</p>`;
       }
     });
     li.appendChild(head);
