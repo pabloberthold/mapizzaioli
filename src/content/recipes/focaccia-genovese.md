@@ -9,6 +9,10 @@ calculator:
   hydrationPercent: 78
   fermentationHours: 3
   fermentationTempC: 24
+image:
+  src: focaccia-al-rosmarino.webp
+  credit: "Foto: Klism / Wikimedia Commons — CC0"
+  alt: "Focaccia genovese al romero, dorada, con hoyuelos, brillo de aceite de oliva y sal gruesa."
 steps:
   - "Prepará la biga: mezclá la harina, el agua y la levadura indicadas. Tapá y dejá reposar 24 horas a temperatura ambiente."
   - "Pasadas las 24 horas, sumá a la biga el resto de la harina, el agua y la sal. Amasá hasta integrar todo."
