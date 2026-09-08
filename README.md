@@ -30,13 +30,14 @@ npm run preview  # preview del build
 
 ## Despliegue
 
-Publicado en **https://pabloberthold.github.io/mapizzaioli/** mediante GitHub
-Actions (`.github/workflows/deploy.yml`). Push a `main` → build + deploy
-automático.
+Dos publicaciones desde `main`:
 
-> Config de `site`/`base` en `astro.config.mjs`. Si el repo cambia de nombre o
-> se publica como repo raíz de usuario, ajustar `base` (ver `standards/astro.md`
-> del AI Workspace).
+- **https://mapizzaioli.shcdigital.net.ar/** — dominio propio. Worker de
+  Cloudflare con static assets (`wrangler.jsonc`), build automático vía
+  Workers Builds (config default `astro.config.mjs`, `base: "/"`).
+- **https://pabloberthold.github.io/mapizzaioli/** — GitHub Actions
+  (`.github/workflows/deploy.yml`), build con config dedicada
+  `astro.config.pages.mjs` (`base: "/mapizzaioli/"`).
 
 ## Estructura
 

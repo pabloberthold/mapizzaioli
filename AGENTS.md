@@ -17,8 +17,8 @@ npm run import:popurri # reimportar recetas de Cocineros Argentinos desde ~/GITL
 ```
 
 ## Gotchas clave
-- **`base: "/mapizzaioli/"`** en `astro.config.mjs` (repo de proyecto, no root). Todo asset/link interno debe usar `import.meta.env.BASE_URL` o rutas relativas — NO rutas absolutas con `/` a secas (rompen en GitHub Pages). El dev server sirve bajo `/mapizzaioli/`, no `/`.
-- `site` = `https://pabloberthold.github.io` (username de git config). Si cambia repo/usuario, ajustar `site`+`base` y `public/robots.txt`.
+- **Dos configs de Astro**: `astro.config.mjs` (producción, `site: https://mapizzaioli.shcdigital.net.ar`, `base: "/"`, deploy vía Workers Builds a Cloudflare) y `astro.config.pages.mjs` (GitHub Pages, `base: "/mapizzaioli/"`). El workflow de Pages buildea con `--config astro.config.pages.mjs`; el build de Cloudflare usa la config default. Todo asset/link interno debe usar `import.meta.env.BASE_URL` o rutas relativas — NO rutas absolutas con `/` a secas.
+- Deploy Cloudflare: Worker assets-only `mapizzaioli` (`wrangler.jsonc`, `assets.directory: ./dist`) en la cuenta Cloudflare dueña de la zona `shcdigital.net.ar`, con Custom Domain `mapizzaioli.shcdigital.net.ar` (DNS + TLS automáticos). `astro preview`/`dev` locales corren bajo `/mapizzaioli/` solo con la config de Pages.
 - **Fórmulas en `src/lib/dough.ts`**, transpuestas 1:1 desde `Calculo Levadura.xlsx`. La de levadura fresca (`(harina*23/hidratación)/horas/temp`) es heurística y divide por cero si hidratación/horas/temp ≤ 0 — la UI valida con `isValidDoughInputs`.
 - Formato de números: `formatGrams()` usa locale `es-AR` (coma decimal).
 - **Astro 7.2+ daemoniza `astro preview`/`dev` cuando detecta un agente de IA** (env `CLAUDECODE` etc.): agrega `--background`/`--json` y el proceso npm muere al instante — rompe el `webServer` de Playwright y confunde con un crash. En terminal/CI normal corre foreground. Para probarlo desde un agente: `env -u CLAUDECODE npm run preview`.
@@ -37,3 +37,4 @@ npm run import:popurri # reimportar recetas de Cocineros Argentinos desde ~/GITL
 
 ## Publicación
 Repo `pabloberthold/mapizzaioli`, deploy automático a GitHub Pages desde `main`.
+Dominio propio `mapizzaioli.shcdigital.net.ar`: push a `main` → Workers Builds → Worker `mapizzaioli` (assets-only) con Custom Domain en la cuenta Cloudflare dueña de `shcdigital.net.ar`.
