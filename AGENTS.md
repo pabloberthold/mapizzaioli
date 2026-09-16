@@ -5,7 +5,7 @@ Project intent: *mapizzaioli* — calculadora de masa para pizza (Astro, alojada
 ## Stack
 - Astro 7 (SSG estático, migrado desde 5 vía `docs/migracion-astro-7.md`) + `@astrojs/sitemap`. Interactividad con **JS vanilla** en `<script>` (sin framework de UI).
 - Impresión/PDF vía `window.print()` + `@media print` (cero dependencias de PDF).
-- Creado con el AI Workspace (`/home/pablo/GIT/ai-workspace/AGENTS.md`) como orquestador — workflow `new-project`.
+- Creado con el AI Workspace (`/home/shared/GIT/ai-workspace/AGENTS.md`) como orquestador — workflow `new-project`.
 
 ## Comandos
 ```bash
