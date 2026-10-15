@@ -12,6 +12,9 @@ const recipes = defineCollection({
       category: z.enum(["italiana", "alemana", "argentina", "otras"]).default("otras"),
       order: z.number().default(0),
       steps: z.array(z.string().min(1)).min(1),
+      // Procedimiento alternativo cuando la calculadora tiene el check de biga
+      // activado (si falta, se usa `steps` en los dos casos).
+      stepsBiga: z.array(z.string().min(1)).optional(),
 
       calculator: z
         .discriminatedUnion("engine", [

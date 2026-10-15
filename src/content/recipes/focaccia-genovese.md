@@ -14,8 +14,16 @@ image:
   credit: "Foto: Klism / Wikimedia Commons — CC0"
   alt: "Focaccia genovese al romero, dorada, con hoyuelos, brillo de aceite de oliva y sal gruesa."
 steps:
-  - "Prepará la biga: mezclá la harina, el agua y la levadura indicadas. Tapá y dejá reposar 24 horas a temperatura ambiente."
-  - "Pasadas las 24 horas, sumá a la biga el resto de la harina, el agua y la sal. Amasá hasta integrar todo."
+  - "Disolvé la levadura en el agua tibia. Sumá la harina y la sal y mezclá desde el centro hacia afuera hasta integrar, sin amasar de más."
+  - "Agregá el aceite y amasá hasta que la masa lo absorba por completo (queda suave y ligeramente pegajosa)."
+  - "Hacé pliegues (stretch & fold): doblá la masa sobre sí misma cada 20–30 minutos, 3 veces, para ganar aire sin desgasificar."
+  - "Aceitá una bandeja y volcá la masa. Estirá con las yemas de los dedos, sin romper las burbujas."
+  - "Dejá levar tapado durante las horas indicadas, hasta que duplique volumen y burbujee."
+  - "Hacé los hoyuelos con los dedos, rociá generosamente con aceite de oliva, romero fresco y sal gruesa."
+  - "Horneá a 230 °C entre 20 y 25 minutos, hasta dorar. Dejá entibiar sobre una rejilla."
+stepsBiga:
+  - "Prepará la biga: mezclá la harina de la biga, su agua y la mitad de la levadura —el bloque 'Biga 24 horas' del cálculo—. Tapá y dejá reposar 24 horas a temperatura ambiente."
+  - "Pasadas las 24 horas, sumá a la biga el resto de la harina, el agua, la levadura restante y la sal (bloque 'Después de 24 horas'). Amasá hasta integrar todo."
   - "Agregá el aceite y amasá hasta que la masa lo absorba por completo (queda suave y ligeramente pegajosa)."
   - "Hacé pliegues (stretch & fold): doblá la masa sobre sí misma cada 20–30 minutos, 3 veces, para ganar aire sin desgasificar."
   - "Aceitá una bandeja y volcá la masa. Estirá con las yemas de los dedos, sin romper las burbujas."

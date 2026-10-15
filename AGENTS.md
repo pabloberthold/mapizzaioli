@@ -26,7 +26,7 @@ npm run import:popurri # reimportar recetas de Cocineros Argentinos desde ~/GITL
 ## Estructura / convenciones
 - Recetas = content collection en `src/content/recipes/` (schema en `src/content.config.ts`, Content Layer con `loader: glob()`). **Agregar receta = crear `.md` nuevo**, aparece sola en `/recetas/` y `/recetas/<slug>/` sin tocar código.
 - Dos tipos de receta en el schema (campo opcional, no exclusivo):
-  - `calculator` → interactiva. `engine: "masa"` (biga, 4 inputs, usa `src/lib/dough.ts`) o `engine: "express"` (2 inputs harina/tiempo, usa `src/lib/express.ts`).
+  - `calculator` → interactiva. `engine: "masa"` (biga, 4 inputs, usa `src/lib/dough.ts`) o `engine: "express"` (2 inputs harina/tiempo, usa `src/lib/express.ts`). Con `engine: "masa"` se puede sumar `stepsBiga` (procedimiento alternativo): el check "Usar biga" de la calculadora muestra ese paso a paso en vez de `steps`, y el resultado incluye el bloque biga + "Después de 24 horas".
   - `ingredients` (lista `{name, amount}`) → estática (sin calculadora, ej. pan de máquina, chucrut).
 - Campo `category` (`italiana` | `alemana` | `argentina` | `otras`, default `otras`): agrupa el listado `/recetas/` en capítulos.
 - **Popurrí** (`/popurri/`): 11.765 recetas scrapeadas de Cocineros Argentinos, datos en `src/data/popurri/` (`recipes/<cat>.json` + `index.json` + `manifest.ts` autogenerados por `scripts/import-popurri.mjs`). Páginas `/popurri/` (grilla + búsqueda global) y `/popurri/<categoria>/` (búsqueda local + recetas expandibles). El JSON se sirve como asset (`?url`) y el DOM de recetas se inyecta desde JS, por eso los estilos van en `src/styles/popurri.css` **global** (no scope).

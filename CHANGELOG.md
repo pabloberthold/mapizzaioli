@@ -5,6 +5,19 @@ Todas las notas relevantes de este proyecto. Formato basado en
 
 ## [Sin publicar]
 
+### Agregado
+
+- **Procedimiento adaptativo según la biga**: las recetas con `engine: "masa"`
+  pueden declarar `stepsBiga` en el frontmatter. El check "Usar biga" de la
+  calculadora cambia el paso a paso (y el rótulo del título, "con biga"/"sin
+  biga") junto con el resultado; sin `stepsBiga` se usa `steps` siempre.
+  Aplicado a `masa-para-pizza` (la nota de biga pasó a ser su propio
+  procedimiento) y a `focaccia-genovese`.
+- **Resultado completo sin biga**: las tarjetas de resultado suman **Harina** y
+  **Aceite** (antes el aceite solo existía en el bloque "Después de 24 horas", así
+  que con el check de biga destildado desaparecía de la receta). El grid pasa a
+  3 columnas (2 en móvil).
+
 ### Corregido
 
 - Calculadora de masa: el bloque **"Después de 24 horas"** no listaba la levadura

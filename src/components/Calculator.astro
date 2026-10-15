@@ -16,15 +16,19 @@ interface Props {
   title: string;
   description: string;
   defaults: DoughInputs;
+  /** Procedimiento directo (sin biga). */
   steps: string[];
+  /** Procedimiento cuando el check de biga está activo. Si falta, se usa `steps`. */
+  stepsBiga?: string[];
   image?: { src: string; credit?: string; alt?: string };
 }
 
-const { title, description, defaults, steps, image } = Astro.props;
+const { title, description, defaults, steps, stepsBiga = [], image } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
 const result = computeDough(defaults);
 const hasSteps = steps.length > 0;
+const hasBigaSteps = stepsBiga.length > 0;
 
 const ballsDefault = Math.max(1, Math.round(defaults.flourGrams / 250));
 const ballWeightDefault = Math.round(defaults.flourGrams / ballsDefault / 10) * 10;
@@ -129,6 +133,14 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
       <h3 class="results__heading">Resultado</h3>
       <dl class="results-grid results-grid--main">
         <div class="result-card">
+          <dt>Harina</dt>
+          <dd><span id="res-flour">{formatGrams(defaults.flourGrams)}</span><span class="unit">g</span></dd>
+        </div>
+        <div class="result-card">
+          <dt>Agua</dt>
+          <dd><span id="res-water">{formatGrams(result.water)}</span><span class="unit">g</span></dd>
+        </div>
+        <div class="result-card">
           <dt>Levadura fresca</dt>
           <dd><span id="res-fresh">{formatGrams(result.freshYeast, 2)}</span><span class="unit">g</span></dd>
         </div>
@@ -141,8 +153,8 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
           <dd><span id="res-salt">{formatGrams(result.salt)}</span><span class="unit">g</span></dd>
         </div>
         <div class="result-card">
-          <dt>Agua</dt>
-          <dd><span id="res-water">{formatGrams(result.water)}</span><span class="unit">g</span></dd>
+          <dt>Aceite</dt>
+          <dd><span id="res-oil">{formatGrams(result.oil)}</span><span class="unit">g</span></dd>
         </div>
       </dl>
 
@@ -191,10 +203,22 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     {
       hasSteps && (
         <section class="recipe-steps" aria-label="Proceso">
-          <h3 class="results__heading">Proceso</h3>
-          <ol class="steps">
+          <h3 class="results__heading">
+            Proceso{" "}
+            {hasBigaSteps && (
+              <span class="results-block__sub" id="process-mode">
+                con biga
+              </span>
+            )}
+          </h3>
+          <ol class="steps" id="steps-direct" hidden={hasBigaSteps}>
             {steps.map((step) => <li>{step}</li>)}
           </ol>
+          {hasBigaSteps && (
+            <ol class="steps" id="steps-biga">
+              {stepsBiga.map((step) => <li>{step}</li>)}
+            </ol>
+          )}
         </section>
       )
     }
@@ -222,10 +246,12 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
   };
 
   const out = {
+    flour: "res-flour",
     fresh: "res-fresh",
     dry: "res-dry",
     salt: "res-salt",
     water: "res-water",
+    oil: "res-oil",
     bigaFlour: "res-biga-flour",
     bigaWater: "res-biga-water",
     bigaFresh: "res-biga-fresh",
@@ -305,6 +331,8 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     const ballOut = el("val-ballweight");
     if (ballOut) ballOut.textContent = formatGrams(pesoPorBola);
 
+    set(out.flour, formatGrams(flourGrams));
+    set(out.oil, formatGrams(r.oil));
     set(out.fresh, formatGrams(r.freshYeast, 2));
     set(out.dry, formatGrams(r.dryYeast, 2));
     set(out.salt, formatGrams(r.salt));
@@ -340,12 +368,19 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
   const fieldBigaFlour = document.getElementById("field-biga-flour");
   const fieldBigaWater = document.getElementById("field-biga-water");
   const fieldBigaYeast = document.getElementById("field-biga-yeast");
+  const stepsDirect = document.getElementById("steps-direct");
+  const stepsBigaList = document.getElementById("steps-biga");
+  const processMode = document.getElementById("process-mode");
   function syncBiga() {
     const show = bigaToggle ? bigaToggle.checked : true;
     if (bigaWrap) bigaWrap.hidden = !show;
     if (fieldBigaFlour) fieldBigaFlour.hidden = !show;
     if (fieldBigaWater) fieldBigaWater.hidden = !show;
     if (fieldBigaYeast) fieldBigaYeast.hidden = !show;
+    // El proceso acompaña el check: con biga se muestra su paso a paso.
+    if (stepsBigaList) stepsBigaList.hidden = !show;
+    if (stepsDirect) stepsDirect.hidden = show && !!stepsBigaList;
+    if (processMode) processMode.textContent = show ? "con biga" : "sin biga";
   }
   bigaToggle?.addEventListener("change", () => {
     syncBiga();
@@ -691,7 +726,7 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     margin: 0 0 var(--spacing-xl);
   }
   .results-grid--main {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
   @media (max-width: 640px) {
     .results-grid--main {
