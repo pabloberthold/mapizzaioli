@@ -162,6 +162,8 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
           <dl class="results-list">
             <div><dt>Harina</dt><dd><span id="res-rest-flour">{formatGrams(result.rest.flour)}</span> g</dd></div>
             <div><dt>Agua</dt><dd><span id="res-rest-water">{formatGrams(result.rest.water)}</span> g</dd></div>
+            <div><dt>Levadura fresca</dt><dd><span id="res-rest-fresh">{formatGrams(result.rest.freshYeast, 2)}</span> g</dd></div>
+            <div><dt>Levadura seca</dt><dd><span id="res-rest-dry">{formatGrams(result.rest.dryYeast, 2)}</span> g</dd></div>
             <div><dt>Sal</dt><dd><span id="res-rest-salt">{formatGrams(result.rest.salt)}</span> g</dd></div>
             <div><dt>Aceite</dt><dd><span id="res-rest-oil">{formatGrams(result.rest.oil)}</span> g</dd></div>
           </dl>
@@ -230,6 +232,8 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     bigaDry: "res-biga-dry",
     restFlour: "res-rest-flour",
     restWater: "res-rest-water",
+    restFresh: "res-rest-fresh",
+    restDry: "res-rest-dry",
     restSalt: "res-rest-salt",
     restOil: "res-rest-oil",
     total: "res-total",
@@ -311,6 +315,8 @@ const flourFromBalls = ballsDefault * ballWeightDefault;
     set(out.bigaDry, formatGrams(r.biga.dryYeast, 2));
     set(out.restFlour, formatGrams(r.rest.flour));
     set(out.restWater, formatGrams(r.rest.water));
+    set(out.restFresh, formatGrams(r.rest.freshYeast, 2));
+    set(out.restDry, formatGrams(r.rest.dryYeast, 2));
     set(out.restSalt, formatGrams(r.rest.salt));
     set(out.restOil, formatGrams(r.rest.oil));
     set(out.total, formatGrams(r.total));

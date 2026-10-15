@@ -16,6 +16,10 @@ describe("dough.ts — fórmulas Excel 1:1", () => {
     expect(r.total).toBeCloseTo(1698, 0);
     expect(r.biga.flour).toBe(750);
     expect(r.biga.water).toBe(375);
+    // La biga se lleva la mitad de la levadura; el resto se incorpora a las 24 h
+    expect(r.biga.freshYeast + r.rest.freshYeast).toBeCloseTo(r.freshYeast, 6);
+    expect(r.biga.dryYeast + r.rest.dryYeast).toBeCloseTo(r.dryYeast, 6);
+    expect(r.rest.freshYeast).toBeCloseTo(1.475, 2);
   });
 
   it("formatGrams es-AR usa coma", () => {

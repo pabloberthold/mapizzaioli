@@ -64,6 +64,7 @@ export function recipeJsonLd(recipe: CollectionEntry<"recipes">) {
         `${roundTo(r.biga.freshYeast, 2)} g de levadura fresca (biga)`,
         g(r.rest.flour) + " de harina",
         g(r.rest.water) + " de agua",
+        `${roundTo(r.rest.freshYeast, 2)} g de levadura fresca`,
         g(r.rest.salt) + " de sal",
         g(r.rest.oil) + " de aceite",
       ],

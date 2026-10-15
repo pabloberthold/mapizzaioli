@@ -3,6 +3,17 @@
 Todas las notas relevantes de este proyecto. Formato basado en
 [Keep a Changelog](https://keepachangelog.com/) y versionado SemVer.
 
+## [Sin publicar]
+
+### Corregido
+
+- Calculadora de masa: el bloque **"Después de 24 horas"** no listaba la levadura
+  restante (la mitad que no va a la biga). Ahora `dough.ts` la expone en
+  `rest.freshYeast`/`rest.dryYeast` y se muestra fresca y seca, igual que en el
+  bloque de la biga. Sin ella la receta sumaba solo la mitad de la levadura
+  calculada. También se agregó al JSON-LD (`seo.ts`) y a la nota de biga de
+  `masa-para-pizza`.
+
 ## [0.2.0] - 2026-08-21
 
 ### Agregado

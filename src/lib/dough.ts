@@ -41,6 +41,8 @@ export interface RestPart {
   water: number;
   salt: number;
   oil: number;
+  freshYeast: number; // levadura que NO va a la biga (C8 - C18)
+  dryYeast: number; // levadura seca que NO va a la biga (C9 - C19)
 }
 
 export interface DoughResult {
@@ -89,6 +91,10 @@ export function computeDough(
   const restWater = water - bigaWater; // C22
   const restSalt = salt; // C23
   const restOil = oil; // C24
+  // El Excel no lista la levadura restante, pero sin ella la receta suma solo la
+  // mitad de la levadura calculada (el resto se incorpora junto a la biga).
+  const restFreshYeast = freshYeast - bigaFreshYeast;
+  const restDryYeast = dryYeast - bigaDryYeast;
 
   const total = flourGrams + water + salt + oil + freshYeast;
 
@@ -109,6 +115,8 @@ export function computeDough(
       water: restWater,
       salt: restSalt,
       oil: restOil,
+      freshYeast: restFreshYeast,
+      dryYeast: restDryYeast,
     },
     total,
   };

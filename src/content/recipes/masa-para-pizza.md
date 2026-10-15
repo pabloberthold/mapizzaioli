@@ -18,7 +18,7 @@ steps:
   - "Agregá el aceite en hilo y amasá con firmeza: plegá, estirá y golpeá suavemente. Seguí hasta que la masa quede lisa, elástica y se despegue de la mesa —la clásica 'ventana de gluten'—, porque es ese gluten el que le da fuerza y aire a la pizza."
   - "Formá un bollo liso: llevá los bordes hacia abajo y sellalos para darle tensión. Depositá la masa en un bowl apenas aceitado, tapala y dejala fermentar a la temperatura indicada durante las horas calculadas, hasta que duplique su volumen y se vea viva y burbujeante."
   - "Volcá sobre mesada enharinada, dividí en bollos del peso que quieras y bolealos bien tensos. Dejálos reposar tapados unos minutos antes de estirar y armar tus pizzas."
-  - "Nota del maestro: la biga es opcional. Si la querés, tomá los valores del bloque 'Biga 24 horas' del cálculo (el 75 % de la harina, su agua al 50 % de hidratación y la mitad de la levadura), mezclalos y dejalos fermentar 24 h a temperatura ambiente; luego incorporala en lugar de esa misma porción de harina, agua y levadura del procedimiento anterior. Suma aroma y digestibilidad, pero la masa directa también queda de pizzería."
+  - "Nota del maestro: la biga es opcional. Si la querés, tomá los valores del bloque 'Biga 24 horas' del cálculo (el 75 % de la harina, su agua al 50 % de hidratación y la mitad de la levadura), mezclalos y dejalos fermentar 24 h a temperatura ambiente. Pasadas las 24 h sumá la biga al resto de la harina y el agua, agregá la sal, el aceite y la levadura restante (todo lo que figura en el bloque 'Después de 24 horas') y seguí con el amasado. Suma aroma y digestibilidad, pero la masa directa también queda de pizzería."
 ---
 
 Masa de pizza de pizzería, con hidratación y levadura calculadas según las horas
